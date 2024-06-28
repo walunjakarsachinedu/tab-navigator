@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>jQuery Example</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <script>
+        keysPressed = new Set();
+
+        function getKeyString() {
+            return [...keysPressed].sort().join("+");
+        }
+
+        $(window).keydown(function(e) {
+            if(!keysPressed.has(e.key)) {
+                keysPressed.add(e.key);
+                console.log(getKeyString() + " down");
+            }
+        });
+
+        $(window).keyup(function(e) {
+            if(keysPressed.has(e.key)) {
+                console.log(getKeyString() + " up");
+                keysPressed.delete(e.key);
+            }
+        });
+
+
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) keysPressed.clear();
+        });
+        window.addEventListener('blur', function() {
+            keysPressed.clear();
+        });
+
+    </script>
+    <style>
+        body {
+            background-color: #1E2F23;
+        }
+    </style>
+</body>
+</html>
