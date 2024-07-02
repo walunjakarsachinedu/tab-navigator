@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "VSCode-like Tab Navigation",
+  "version": "1.0",
+  "description": "Navigate tabs like in Visual Studio Code",
+  "permissions": ["tabs", "commands"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup/popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["overlay.css"]
+    }
+  ],
+  "commands": {
+    "toggle-overlay": {
+      "suggested_key": {
+        "default": "Ctrl+M"
+      },
+      "description": "Toggle the Tab Navigator overlay"
+    }
+  }
+}
