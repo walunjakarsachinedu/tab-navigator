@@ -7,40 +7,27 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <script>
-        keysPressed = new Set();
 
-        function getKeyString() {
-            return [...keysPressed].sort().join("+");
-        }
+<!-- keyboard class -->
+<script src="./keyboard.js"></script>
 
-        $(window).keydown(function(e) {
-            if(!keysPressed.has(e.key)) {
-                keysPressed.add(e.key);
-                console.log(getKeyString() + " down");
-            }
-        });
-
-        $(window).keyup(function(e) {
-            if(keysPressed.has(e.key)) {
-                console.log(getKeyString() + " up");
-                keysPressed.delete(e.key);
-            }
-        });
+<!-- actual code -->
+<script>
+  const keyboard = new MyKeyboard();
+  keyboard.listenKeyDown((e) => {
+    console.log([...e].sort().join("+") + " down")
+  });
+  keyboard.listenKeyUp((e) => {
+    console.log([...e].sort().join("+") + " up")
+  });
+</script>
 
 
-        document.addEventListener('visibilitychange', function() {
-            if (document.hidden) keysPressed.clear();
-        });
-        window.addEventListener('blur', function() {
-            keysPressed.clear();
-        });
-
-    </script>
-    <style>
-        body {
-            background-color: #1E2F23;
-        }
-    </style>
+<!-- main styles -->
+<style>
+    body {
+        background-color: #1E2F23;
+    }
+</style>
 </body>
 </html>
