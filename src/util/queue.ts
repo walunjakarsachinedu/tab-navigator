@@ -1,10 +1,17 @@
 type DataGetter<Data> = (que: Data[]) => Data | undefined;
 
 class Queue<Data> {
-  que: Data[];
+  private _que: Data[];
 
   constructor() {
-    this.que = [];
+    this._que = [];
+  }
+
+  /**
+   * @return Copy of que data.
+   */
+  getQueData() {
+    return [...this._que];
   }
 
   /**
@@ -12,19 +19,19 @@ class Queue<Data> {
    * @param options Object containing either `data` or `getData` function.
    */
   moveFront({ data, getData }: { data?: Data, getData?: DataGetter<Data> }) {
-    const elementToMove = data ?? (getData ? getData(this.que) : undefined);
+    const elementToMove = data ?? (getData ? getData(this._que) : undefined);
     if (elementToMove) {
-      const index = this.que.indexOf(elementToMove);
+      const index = this._que.indexOf(elementToMove);
       if (index !== -1) {
-        this.que.splice(index, 1); // Remove the element from its current position
-        this.que.unshift(elementToMove); // Add it to the front of the array
+        this._que.splice(index, 1); // Remove the element from its current position
+        this._que.unshift(elementToMove); // Add it to the front of the array
       }
     }
   }
 
   /** Method to add data to the end of the queue. */
   add(data: Data) {
-    this.que.push(data);
+    this._que.push(data);
   }
 
   /**
@@ -32,11 +39,11 @@ class Queue<Data> {
    * @param options Object containing either `data` or `getData` function.
    */
   remove({ data, getData }: { data?: Data, getData?: DataGetter<Data> }) {
-    const elementToRemove = data ?? (getData ? getData(this.que) : undefined);
+    const elementToRemove = data ?? (getData ? getData(this._que) : undefined);
     if (elementToRemove) {
-      const index = this.que.indexOf(elementToRemove);
+      const index = this._que.indexOf(elementToRemove);
       if (index !== -1) {
-        this.que.splice(index, 1);
+        this._que.splice(index, 1);
       }
     }
   }
@@ -47,12 +54,12 @@ class Queue<Data> {
    * @param updateData Partial<Data> containing optional fields to update.
    */
   update({ data, getData }: { data?: Data, getData?: DataGetter<Data> }, updateData?: Partial<Data>) {
-    const elementToUpdate = data ?? (getData ? getData(this.que) : undefined);
+    const elementToUpdate = data ?? (getData ? getData(this._que) : undefined);
     if (elementToUpdate && updateData) {
-      const index = this.que.indexOf(elementToUpdate);
+      const index = this._que.indexOf(elementToUpdate);
       if (index !== -1) {
         // Merge existing element with updateData using spread operator
-        this.que[index] = { ...this.que[index], ...updateData };
+        this._que[index] = { ...this._que[index], ...updateData };
       }
     }
   }

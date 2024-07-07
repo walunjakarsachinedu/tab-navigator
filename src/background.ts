@@ -12,6 +12,4 @@ import Queue from "./util/queue";
 // });
 
 const tabTracker = new TabTracker();
-tabTracker.addTabEventListener((tabData: Queue<TabData>) => {
-  console.log("tabData: ", tabData);
-});
+console.log(tabTracker.getTabQue());

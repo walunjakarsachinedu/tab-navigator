@@ -2,14 +2,23 @@ import { EventEmitter, EventHandler } from "./util/event-emitter";
 import { TabData } from "./types";
 import Queue, { DataGetter } from "./util/queue";
 
+/**
+ * @class This class starts listening to Chrome tab events once an instance is created.
+ */
 class TabTracker {
   private _tabQue: Queue<TabData>;
-  private _tabEvent: EventEmitter<Queue<TabData>>;
 
   constructor() {
     this._tabQue = new Queue<TabData>();
-    this._tabEvent = new EventEmitter<Queue<TabData>>();
     this._listenToChromeTabEvents();
+  }
+
+  /**
+   * 
+   * @returns The tab queue with the current active tab first, followed by previously visited tabs.
+   */
+  getTabQue() {
+    return this._tabQue.getQueData();
   }
 
   private _listenToChromeTabEvents() {
@@ -21,10 +30,6 @@ class TabTracker {
     chrome.tabs.onActivated.addListener(this._onTabActivated.bind(this));
   }
 
-  addTabEventListener(listener: EventHandler<Queue<TabData>>) {
-    this._tabEvent.addListener(listener);
-  }
-
   private _onTabCreated(tab: chrome.tabs.Tab) {
     // console.log('Tab created:', tab.id);
     this._tabQue.add({
@@ -33,7 +38,6 @@ class TabTracker {
       title: tab.title ?? "",
       status: tab.status ?? ""
     });
-    this._tabEvent.emit(this._tabQue);
   }
 
   private _onTabUpdated(tabId: number, changeInfo: chrome.tabs.TabChangeInfo, tab: chrome.tabs.Tab) {
@@ -42,10 +46,6 @@ class TabTracker {
       { getData: TabTracker.getTabByIdFunc(tabId) },
       changeInfo
     );
-
-    // TODO: call move front only on url change
-
-    this._tabEvent.emit(this._tabQue);
   }
 
   private _onTabActivated(activeInfo: chrome.tabs.TabActiveInfo) {
@@ -55,7 +55,6 @@ class TabTracker {
   private _onTabRemoved(tabId: number, removeInfo: chrome.tabs.TabRemoveInfo) {
     // console.log('Tab removed:', tabId);
     this._tabQue.remove({ getData: TabTracker.getTabByIdFunc(tabId) });
-    this._tabEvent.emit(this._tabQue);
   }
 
   static getTabByIdFunc(tabId: number): DataGetter<TabData> {
