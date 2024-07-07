@@ -58,6 +58,8 @@ class MyKeyboard {
     "AltRight": "Alt",
     "ShiftLeft": "Shift",
     "ShiftRight": "Shift",
+    "CtrlLeft": "Ctrl",
+    "CtrlRight": "Ctrl",
   };
   private _getKeyName(keyCode: string): string {
     if(keyCode.startsWith("Key")) return keyCode.slice(3);
