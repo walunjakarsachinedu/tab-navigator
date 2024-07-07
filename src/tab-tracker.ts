@@ -1,4 +1,3 @@
-import { EventEmitter, EventHandler } from "./util/event-emitter";
 import { TabData } from "./types";
 import Queue, { DataGetter } from "./util/queue";
 

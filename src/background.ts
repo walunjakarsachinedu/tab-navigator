@@ -1,6 +1,4 @@
 import TabTracker from "./tab-tracker";
-import { TabData } from "./types";
-import Queue from "./util/queue";
 
 
 // chrome.commands.onCommand?.addListener((command) => {
