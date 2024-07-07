@@ -21,7 +21,6 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "@types/chrome": "^0.0.268",
-    "jquery": "^3.7.1"
+    "@types/chrome": "^0.0.268"
   }
 }
