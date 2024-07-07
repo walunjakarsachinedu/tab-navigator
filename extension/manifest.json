@@ -14,7 +14,7 @@
     {
       "matches": ["<all_urls>"],
       "js": ["content.js"],
-      "css": ["overlay.css"]
+      "css": ["styles/overlay.css"]
     }
   ],
   "commands": {

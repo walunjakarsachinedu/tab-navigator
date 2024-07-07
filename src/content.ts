@@ -1,5 +1,5 @@
 let overlayVisible = false;
-let draggedElement = null;
+let draggedElement: HTMLElement | null = null;
 let selectedTabIndex = 0;
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -35,9 +35,9 @@ function hideOverlay() {
   document.removeEventListener('keydown', handleKeyPress);
 }
 
-function handleOutsideClick(e) {
+function handleOutsideClick(e: MouseEvent) {
   const overlay = document.getElementById('tab-navigator-overlay');
-  if (overlay && !overlay.contains(e.target)) {
+  if (overlay && !overlay.contains(e.target as Node)) {
     hideOverlay();
   }
 }
@@ -64,19 +64,19 @@ function createOverlay() {
   return overlay;
 }
 
-function startDragging(e) {
+function startDragging(e: MouseEvent) {
   e.preventDefault();
   draggedElement = document.getElementById('tab-navigator-overlay');
-  draggedElement.style.cursor = 'grabbing';
-  const rect = draggedElement.getBoundingClientRect();
-  draggedElement.dataset.offsetX = e.clientX - rect.left - rect.width/2;
-  draggedElement.dataset.offsetY = e.clientY - rect.top;
+  draggedElement!.style.cursor = 'grabbing';
+  const rect = draggedElement!.getBoundingClientRect();
+  draggedElement!.dataset.offsetX = (e.clientX - rect.left - rect.width/2).toString();
+  draggedElement!.dataset.offsetY = (e.clientY - rect.top).toString();
 }
 
-function drag(e) {
+function drag(e: MouseEvent) {
   if (draggedElement) {
-    const x = e.clientX - draggedElement.dataset.offsetX;
-    const y = e.clientY - draggedElement.dataset.offsetY;
+    const x = e.clientX - parseFloat(draggedElement!.dataset.offsetX!);
+    const y = e.clientY - parseFloat(draggedElement!.dataset.offsetY!);
     draggedElement.style.left = `${x}px`;
     draggedElement.style.top = `${y}px`;
   }
@@ -89,12 +89,12 @@ function stopDragging() {
   }
 }
 
-function handleKeyPress(e) {
-  if (e.key === 'ArrowUp') {
+function handleKeyPress(e: KeyboardEvent) {
+  if (e.key === 'ArrowUp' || e.key === 'k') {
     e.preventDefault();
     selectedTabIndex = Math.max(0, selectedTabIndex - 1);
     updateSelectedTab();
-  } else if (e.key === 'ArrowDown') {
+  } else if (e.key === 'ArrowDown' || e.key === 'j') {
     e.preventDefault();
     const tabList = document.querySelectorAll('#tab-navigator-overlay .tab-list li');
     selectedTabIndex = Math.min(tabList.length - 1, selectedTabIndex + 1);
