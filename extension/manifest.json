@@ -20,7 +20,7 @@
   "commands": {
     "toggle-overlay": {
       "suggested_key": {
-        "default": "Alt+M"
+        "default": "Ctrl+M"
       },
       "description": "Toggle the Tab Navigator overlay"
     }

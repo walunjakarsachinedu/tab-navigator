@@ -1,5 +1,8 @@
 import { EventEmitter, EventHandler } from "./util/event-emitter";
 
+/**
+ * @class Handles keyboard interactions, tracking key presses/releases and emitting events.
+ */
 class MyKeyboard {
   private _keysPressed: Set<String>;
   private _keyDownEvent: EventEmitter<Set<String>>;
