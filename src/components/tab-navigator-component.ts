@@ -2,7 +2,7 @@ import { TabNavigatorOverlayInterface } from "../interface/tab-navigator-overlay
 import { TabData } from "../types";
 import { EventEmitter, EventHandler } from "../util/event-emitter";
 
-class TabNavigatorOverlay implements TabNavigatorOverlayInterface {
+export class TabNavigatorOverlay implements TabNavigatorOverlayInterface {
   private container: HTMLElement;
   private shadowRoot: ShadowRoot;
   private tabs: TabData[] = [];
@@ -28,7 +28,7 @@ class TabNavigatorOverlay implements TabNavigatorOverlayInterface {
         position: fixed;
         top: 10px;
         left: 50%;
-        transform: translate(-50%, 0%);
+        transform: translateX(-50%);
         background: #1e1e1e;
         color: #ffffff;
         border: 1px solid #333;
@@ -37,7 +37,14 @@ class TabNavigatorOverlay implements TabNavigatorOverlayInterface {
         padding: 10px;
         z-index: 10000;
         display: none;
+        width: 500px;
       }
+      @media (max-width: 768px) {
+        .dialog {
+            width: 70%;
+        }
+      }
+
       .dialog ul {
         list-style: none;
         padding: 0;
@@ -55,6 +62,12 @@ class TabNavigatorOverlay implements TabNavigatorOverlayInterface {
       }
       .dialog li:hover:not(.selected) {
         background: #333333;
+      }
+      .text-truncate {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        width: 100%;
       }
       .remove-button {
         margin-left: 10px;
@@ -114,14 +127,18 @@ class TabNavigatorOverlay implements TabNavigatorOverlayInterface {
     const list = this.shadowRoot.querySelector('ul')!;
     list.innerHTML = '';
     tabs.forEach((tab) => {
-      const item = document.createElement('li');
-      item.textContent = tab.title;
+      const title = document.createElement('div');
+      title.classList.add("text-truncate")
+      title.textContent = tab.title;
 
       const removeButton = document.createElement('button');
       removeButton.innerHTML = '&#x2715;'; // Unicode character for "✕"
       removeButton.classList.add('remove-button');
 
+      const item = document.createElement('li');
+      item.appendChild(title);
       item.appendChild(removeButton);
+
       list.appendChild(item);
     });
     this.shadowRoot.querySelector('.dialog')!.setAttribute('style', 'display: block;');
