@@ -83,30 +83,43 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayInterface {
   private initializeUI() {
     const dialog = document.createElement('div');
     dialog.classList.add('dialog');
-
+  
     const list = document.createElement('ul');
     dialog.appendChild(list);
-
+  
     this.shadowRoot.appendChild(dialog);
     document.body.appendChild(this.container);
-
-    dialog.addEventListener('click', (event) => {
-      if (event.target instanceof HTMLElement) {
-        if (event.target.tagName === 'LI') {
-          const index = Array.from(list.children).indexOf(event.target);
-          if (index !== -1) {
-            this.selectItem(index);
-            this.itemSelectedEmitter.emit(this.tabs[index]);
-          }
-        } else if (event.target.classList.contains('remove-button')) {
-          const index = Array.from(list.children).indexOf(event.target.parentElement!);
-          if (index !== -1) {
-            this.removeItem(index);
-          }
+  
+    // Add event listener for list item clicks
+    list.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement;
+  
+      if (target.tagName === 'LI' || target.classList.contains('li-item-title')) {
+        let liElement: HTMLElement | null = target;
+        if (target.classList.contains('li-item-title')) {
+          liElement = target.parentElement as HTMLElement;
+        }
+  
+        const index = Array.from(list.children).indexOf(liElement);
+        if (index !== -1) {
+          this.selectItem(index);
+          this.itemSelectedEmitter.emit(this.tabs[index]);
         }
       }
     });
-
+  
+    // Add event listener for remove button clicks
+    list.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement;
+      if (target.classList.contains('remove-button')) {
+        const liElement = target.parentElement as HTMLElement;
+        const index = Array.from(list.children).indexOf(liElement);
+        if (index !== -1) {
+          this.removeItem(index);
+        }
+      }
+    });
+  
     document.addEventListener('keydown', (event) => {
       if (dialog.style.display === 'block') {
         if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
@@ -120,7 +133,8 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayInterface {
       }
     });
   }
-
+  
+  
   show(tabs: TabData[]): void {
     this.tabs = tabs;
     this.selectedTabIndex = null;
@@ -128,7 +142,7 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayInterface {
     list.innerHTML = '';
     tabs.forEach((tab) => {
       const title = document.createElement('div');
-      title.classList.add("text-truncate")
+      title.classList.add("text-truncate", "li-item-title")
       title.textContent = tab.title;
 
       const removeButton = document.createElement('button');
