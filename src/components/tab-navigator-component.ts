@@ -1,13 +1,14 @@
-import { TabNavigatorOverlayInterface } from "../interface/tab-navigator-overlay";
+import { TabNavigatorOverlayI } from "../interface/tab-navigator-overlay";
 import { TabData } from "../types";
 import { EventEmitter, EventHandler } from "../util/event-emitter";
 
-export class TabNavigatorOverlay implements TabNavigatorOverlayInterface {
+export class TabNavigatorOverlay implements TabNavigatorOverlayI {
   private container: HTMLElement;
   private shadowRoot: ShadowRoot;
-  private tabs: TabData[] = [];
-  private selectedTabIndex: number | null = null;
+  tabs: TabData[] = [];
+  private selectedTabIndex: number = 0;
   private itemSelectedEmitter: EventEmitter<TabData> = new EventEmitter();
+  private itemDeletedEmitter: EventEmitter<TabData> = new EventEmitter();
 
   constructor() {
     this.container = document.createElement('div');
@@ -80,6 +81,10 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayInterface {
     this.shadowRoot.appendChild(style);
   }
 
+  get element() {
+    return this.container;
+  }
+
   private initializeUI() {
     const dialog = document.createElement('div');
     dialog.classList.add('dialog');
@@ -116,6 +121,7 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayInterface {
         const index = Array.from(list.children).indexOf(liElement);
         if (index !== -1) {
           this.removeItem(index);
+          this.itemDeletedEmitter.emit(this.tabs[index]);
         }
       }
     });
@@ -137,7 +143,7 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayInterface {
   
   show(tabs: TabData[]): void {
     this.tabs = tabs;
-    this.selectedTabIndex = null;
+    this.selectedTabIndex = 0;
     const list = this.shadowRoot.querySelector('ul')!;
     list.innerHTML = '';
     tabs.forEach((tab) => {
@@ -174,8 +180,13 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayInterface {
     this.selectedTabIndex = tabIndex;
   }
 
+
   onItemSelected(listener: EventHandler<TabData>): void {
     this.itemSelectedEmitter.addListener(listener);
+  }
+
+  onItemDeleted(listener: EventHandler<TabData>): void {
+    this.itemDeletedEmitter.addListener(listener);
   }
 
   removeItem(tabIndex: number): void {
@@ -183,16 +194,3 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayInterface {
     this.show(this.tabs);
   }
 }
-
-// Example usage:
-const tabNavigator = new TabNavigatorOverlay();
-tabNavigator.show([
-  { id: 1, url: 'https://example.com', title: 'How to Learn JavaScript in 30 Days: A Comprehensive Guide', status: 'active' },
-  { id: 2, url: 'https://example.org', title: 'The Ultimate Guide to Understanding CSS Grid and Flexbox', status: 'inactive' },
-  { id: 3, url: 'https://example.net', title: 'Mastering Python: Tips and Tricks for Effective Python Programming', status: 'active' },
-  { id: 4, url: 'https://example.edu', title: 'An In-Depth Analysis of Machine Learning Algorithms and Applications', status: 'inactive' },
-  { id: 5, url: 'https://example.co', title: 'The Complete Guide to Web Development: HTML, CSS, JavaScript, and Beyond', status: 'active' }
-]);
-tabNavigator.onItemSelected((tab) => {
-  console.log('Tab selected:', tab);
-});

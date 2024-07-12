@@ -1,5 +1,11 @@
+import { TabNavigatorOverlay } from "./components/tab-navigator-component";
+import MyKeyboard from "./keyboard";
+
 let overlayVisible = false;
 let draggedElement: HTMLElement | null = null;
+let overlay = new TabNavigatorOverlay();
+let keyboard = new MyKeyboard();
+overlay.element.id = 'tab-navigator-overlay';
 let selectedTabIndex = 0;
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -17,22 +23,24 @@ function toggleOverlay() {
 }
 
 function showOverlay() {
+  if(overlayVisible) return;
   const overlay = createOverlay();
   document.body.appendChild(overlay);
   overlayVisible = true;
   document.addEventListener('mousedown', handleOutsideClick);
-  document.addEventListener('keydown', handleKeyPress);
-  updateSelectedTab();
+  // document.addEventListener('keydown', handleKeyPress);
+  // updateSelectedTab();
 }
 
 function hideOverlay() {
+  if(!overlayVisible) return;
   const overlay = document.getElementById('tab-navigator-overlay');
   if (overlay) {
     document.body.removeChild(overlay);
   }
   overlayVisible = false;
   document.removeEventListener('mousedown', handleOutsideClick);
-  document.removeEventListener('keydown', handleKeyPress);
+  // document.removeEventListener('keydown', handleKeyPress);
 }
 
 function handleOutsideClick(e: MouseEvent) {
@@ -42,26 +50,24 @@ function handleOutsideClick(e: MouseEvent) {
   }
 }
 
-function createOverlay() {
-  const overlay = document.createElement('div');
-  overlay.id = 'tab-navigator-overlay';
-  overlay.innerHTML = `
-    <div class="container">
-      <ul class="tab-list">
-        <li>Tab 1: Google</li>
-        <li>Tab 2: GitHub</li>
-        <li>Tab 3: Stack Overflow</li>
-        <li>Tab 4: YouTube</li>
-        <li>Tab 5: Netflix</li>
-      </ul>
-    </div>
-  `;
+function createOverlay() : HTMLElement {
+  overlay.show([
+    { id: 1, url: 'https://example.com', title: 'How to Learn JavaScript in 30 Days: A Comprehensive Guide', status: 'active' },
+    { id: 2, url: 'https://example.org', title: 'The Ultimate Guide to Understanding CSS Grid and Flexbox', status: 'inactive' },
+    { id: 3, url: 'https://example.net', title: 'Mastering Python: Tips and Tricks for Effective Python Programming', status: 'active' },
+    { id: 4, url: 'https://example.edu', title: 'An In-Depth Analysis of Machine Learning Algorithms and Applications', status: 'inactive' },
+    { id: 5, url: 'https://example.co', title: 'The Complete Guide to Web Development: HTML, CSS, JavaScript, and Beyond', status: 'active' }
+  ]);
+  overlay.selectItem(0);
+  overlay.onItemSelected((tab) => {
+    console.log('Tab selected:', tab);
+  });
 
-  overlay.addEventListener('mousedown', startDragging);
+  overlay.element.addEventListener('mousedown', startDragging);
   document.addEventListener('mousemove', drag);
   document.addEventListener('mouseup', stopDragging);
 
-  return overlay;
+  return overlay.element;
 }
 
 function startDragging(e: MouseEvent) {
@@ -89,26 +95,33 @@ function stopDragging() {
   }
 }
 
-function handleKeyPress(e: KeyboardEvent) {
-  if (e.key === 'ArrowUp' || e.key === 'k') {
-    e.preventDefault();
-    selectedTabIndex = Math.max(0, selectedTabIndex - 1);
-    updateSelectedTab();
-  } else if (e.key === 'ArrowDown' || e.key === 'j') {
-    e.preventDefault();
-    const tabList = document.querySelectorAll('#tab-navigator-overlay .tab-list li');
-    selectedTabIndex = Math.min(tabList.length - 1, selectedTabIndex + 1);
-    updateSelectedTab();
-  }
+function selectNextItem(): void {
+  selectedTabIndex = (selectedTabIndex + 1) % overlay.tabs.length;
+  overlay.selectItem(selectedTabIndex);
 }
 
-function updateSelectedTab() {
-  const tabList = document.querySelectorAll('#tab-navigator-overlay .tab-list li');
-  tabList.forEach((tab, index) => {
-    if (index === selectedTabIndex) {
-      tab.classList.add('selected');
-    } else {
-      tab.classList.remove('selected');
-    }
-  });
+function selectPreviousItem(): void {
+  selectedTabIndex = (selectedTabIndex - 1 + overlay.tabs.length) % overlay.tabs.length;
+  overlay.selectItem(selectedTabIndex);
 }
+
+keyboard.listenKeyDown((keys: Set<String>) => {
+  if(keys.has("alt") && keys.has("j")) {
+    if(!overlayVisible) {
+      selectedTabIndex = 0;
+      showOverlay(); 
+    }
+    selectNextItem();
+  }
+  if(keys.has("alt") && keys.has("k")) {
+    if(!overlayVisible) {
+      selectedTabIndex = 0;
+      showOverlay(); 
+    }
+    selectPreviousItem();
+  }
+});
+
+keyboard.listenKeyUp((keys: String) => {
+  if(keys == "alt") hideOverlay();
+});

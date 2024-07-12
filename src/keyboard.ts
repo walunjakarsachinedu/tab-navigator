@@ -6,12 +6,12 @@ import { EventEmitter, EventHandler } from "./util/event-emitter";
 class MyKeyboard {
   private _keysPressed: Set<String>;
   private _keyDownEvent: EventEmitter<Set<String>>;
-  private _keyUpEvent: EventEmitter<Set<String>>;
+  private _keyUpEvent: EventEmitter<String>;
   
   constructor() {
     this._keysPressed = new Set();
     this._keyDownEvent = new EventEmitter<Set<String>>();
-    this._keyUpEvent = new EventEmitter<Set<String>>();
+    this._keyUpEvent = new EventEmitter<String>();
 
     document.addEventListener("keydown", this._onKeyDown.bind(this));
     document.addEventListener("keyup", this._onKeyUp.bind(this));
@@ -23,15 +23,18 @@ class MyKeyboard {
   }
 
 
-  removeListener(listener: EventHandler<Set<String>>) {
+  removeKeyDownListener(listener: EventHandler<Set<String>>) {
     this._keyDownEvent.removeListener(listener);
+  }
+
+  removeKeyUpListener(listener: EventHandler<String>) {
     this._keyUpEvent.removeListener(listener);
   }
 
   listenKeyDown(listener: EventHandler<Set<String>>) {
     this._keyDownEvent.addListener(listener);
   }
-  listenKeyUp(listener: EventHandler<Set<String>>) {
+  listenKeyUp(listener: EventHandler<String>) {
     this._keyUpEvent.addListener(listener);
   }
 
@@ -49,8 +52,8 @@ class MyKeyboard {
   private _onKeyUp(e: KeyboardEvent): void {
     const keyCode = this._getKeyName(e.code);
     if(this._keysPressed.has(keyCode)) {
-        this._keyUpEvent.emit(this._keysPressed);
         this._keysPressed.delete(keyCode);
+        this._keyUpEvent.emit(keyCode);
     }
   }
 
@@ -65,9 +68,9 @@ class MyKeyboard {
     "CtrlRight": "Ctrl",
   };
   private _getKeyName(keyCode: string): string {
-    if(keyCode.startsWith("Key")) return keyCode.slice(3);
-    if(keyCode in this._keyCodeToName) return this._keyCodeToName[keyCode];
-    return keyCode;
+    if(keyCode.startsWith("Key")) keyCode = keyCode.slice(3);
+    else if(keyCode in this._keyCodeToName) keyCode = this._keyCodeToName[keyCode];
+    return keyCode.toLowerCase();
   }
 }
 
