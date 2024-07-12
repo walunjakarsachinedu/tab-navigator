@@ -25,6 +25,7 @@ function toggleOverlay() {
 
 async function showOverlay() {
   if(overlayVisible) return;
+
   const overlayEl = await createOverlay();
   document.body.appendChild(overlayEl);
   overlay.selectItem(selectedTabIndex);
@@ -105,6 +106,7 @@ function selectPreviousItem(): void {
 
 keyboard.listenKeyDown(async (keys: Set<String>) => {
   if(keys.has("alt") && keys.has("j")) {
+    (document.activeElement as HTMLElement)?.blur();
     if(!overlayVisible) {
       selectedTabIndex = 0;
       await showOverlay(); 
