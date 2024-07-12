@@ -43,6 +43,7 @@ class MyKeyboard {
   }
 
   private _onKeyDown(e: KeyboardEvent): void {
+    if(e.code == null) return;
     const keyCode = this._getKeyName(e.code);
     if(!this._keysPressed.has(keyCode)) {
         this._keysPressed.add(keyCode);
@@ -50,6 +51,7 @@ class MyKeyboard {
     }
   }
   private _onKeyUp(e: KeyboardEvent): void {
+    if(e.code == null) return;
     const keyCode = this._getKeyName(e.code);
     if(this._keysPressed.has(keyCode)) {
         this._keysPressed.delete(keyCode);

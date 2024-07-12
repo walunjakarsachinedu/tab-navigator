@@ -1,5 +1,6 @@
 import { TabNavigatorOverlay } from "./components/tab-navigator-component";
 import MyKeyboard from "./keyboard";
+import { TabData } from "./types";
 
 let overlayVisible = false;
 let draggedElement: HTMLElement | null = null;
@@ -22,10 +23,11 @@ function toggleOverlay() {
   }
 }
 
-function showOverlay() {
+async function showOverlay() {
   if(overlayVisible) return;
-  const overlay = createOverlay();
-  document.body.appendChild(overlay);
+  const overlayEl = await createOverlay();
+  document.body.appendChild(overlayEl);
+  overlay.selectItem(selectedTabIndex);
   overlayVisible = true;
   document.addEventListener('mousedown', handleOutsideClick);
   // document.addEventListener('keydown', handleKeyPress);
@@ -50,17 +52,13 @@ function handleOutsideClick(e: MouseEvent) {
   }
 }
 
-function createOverlay() : HTMLElement {
-  overlay.show([
-    { id: 1, url: 'https://example.com', title: 'How to Learn JavaScript in 30 Days: A Comprehensive Guide', status: 'active' },
-    { id: 2, url: 'https://example.org', title: 'The Ultimate Guide to Understanding CSS Grid and Flexbox', status: 'inactive' },
-    { id: 3, url: 'https://example.net', title: 'Mastering Python: Tips and Tricks for Effective Python Programming', status: 'active' },
-    { id: 4, url: 'https://example.edu', title: 'An In-Depth Analysis of Machine Learning Algorithms and Applications', status: 'inactive' },
-    { id: 5, url: 'https://example.co', title: 'The Complete Guide to Web Development: HTML, CSS, JavaScript, and Beyond', status: 'active' }
-  ]);
-  overlay.selectItem(0);
+var tabs: TabData[] = [];
+async function createOverlay() : Promise<HTMLElement> {
+  tabs = await getTabs();
+  overlay.show(tabs);
   overlay.onItemSelected((tab) => {
     console.log('Tab selected:', tab);
+    selectedTabIndex = tabs.indexOf(tab);
   });
 
   overlay.element.addEventListener('mousedown', startDragging);
@@ -105,18 +103,18 @@ function selectPreviousItem(): void {
   overlay.selectItem(selectedTabIndex);
 }
 
-keyboard.listenKeyDown((keys: Set<String>) => {
+keyboard.listenKeyDown(async (keys: Set<String>) => {
   if(keys.has("alt") && keys.has("j")) {
     if(!overlayVisible) {
       selectedTabIndex = 0;
-      showOverlay(); 
+      await showOverlay(); 
     }
     selectNextItem();
   }
   if(keys.has("alt") && keys.has("k")) {
     if(!overlayVisible) {
       selectedTabIndex = 0;
-      showOverlay(); 
+      await showOverlay(); 
     }
     selectPreviousItem();
   }
@@ -125,3 +123,12 @@ keyboard.listenKeyDown((keys: Set<String>) => {
 keyboard.listenKeyUp((keys: String) => {
   if(keys == "alt") hideOverlay();
 });
+
+function  getTabs(): Promise<TabData[]> {
+    return new Promise<TabData[]>((resolve, reject) => {
+      chrome.runtime.sendMessage({ action: "getTabs" }, function(response) {
+        if (response) resolve(response.tabs);
+        else reject(new Error("Failed to get tabs"));
+      });
+    });
+  }
