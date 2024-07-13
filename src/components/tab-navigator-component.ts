@@ -91,9 +91,17 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayI {
     const list = this.shadowRoot.querySelector('ul')!;
     list.innerHTML = '';
     tabs.forEach((tab) => {
+      const favIcon = document.createElement('img');
+      favIcon.src = tab.favIconUrl;
+      favIcon.classList.add('favicon');
+      favIcon.style.width = '16px';
+      favIcon.style.height = '16px';
+      favIcon.style.marginRight = '16px';
+
       const title = document.createElement('div');
       title.classList.add("text-truncate", "li-item-title")
       title.textContent = tab.title;
+
       const subtitle = document.createElement('div');
       subtitle.textContent = tab.url.replace(/^(https?|ftp):\/\//, '');
       subtitle.classList.add("text-truncate", "subtitle", "pl-2");
@@ -104,6 +112,7 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayI {
       removeButton.classList.add('remove-button');
 
       const item = document.createElement('li');
+      item.appendChild(favIcon);
       item.appendChild(title);
       item.appendChild(removeButton);
 

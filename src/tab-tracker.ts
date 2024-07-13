@@ -35,7 +35,8 @@ class TabTracker {
       id: tab.id!,
       url: tab.url ?? "",
       title: tab.title ?? "",
-      status: tab.status ?? ""
+      status: tab.status ?? "",
+      favIconUrl: tab.favIconUrl ?? ""
     });
   }
 
