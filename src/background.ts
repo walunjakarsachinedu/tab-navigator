@@ -11,5 +11,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   }
 });
 
-// const tabTracker = new TabTracker();
-// console.log(tabTracker.getTabQue());
+
+// Handle service worker termination
+chrome.runtime.onSuspend.addListener(() => {
+    console.log('Keeping background service alive.');
+});
