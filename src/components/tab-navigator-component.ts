@@ -1,6 +1,7 @@
 import { TabNavigatorOverlayI } from "../interface/tab-navigator-overlay";
 import { TabData } from "../types";
 import { EventEmitter, EventHandler } from "../util/event-emitter";
+import dialogStyle from './dialog.css';
 
 export class TabNavigatorOverlay implements TabNavigatorOverlayI {
   private container: HTMLElement;
@@ -20,90 +21,7 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayI {
 
   private initializeStyles() {
     const style = document.createElement('style');
-    style.textContent = `
-      @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap');
-
-      .dialog {
-        font-family: "Fira Code", monospace;
-        font-size: 12px;
-        position: fixed;
-        top: 10px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: #1e1e1e;
-        color: #ffffff;
-        border: 1px solid #333;
-        border-radius: 5px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        padding: 10px;
-        z-index: 10000;
-        display: none;
-        width: 500px;
-        max-height: 70%;
-
-        overflow-y: auto;
-        scrollbar-width: thin; 
-        scrollbar-color: #888888 #f0f0f0;
-      }
-      @media (max-width: 768px) {
-        .dialog {
-            width: 70%;
-        }
-      }
-
-      .dialog ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-      }
-      .dialog li {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 5px 10px;
-        cursor: pointer;
-      }
-      .dialog li.selected {
-        background: #007acc;
-      }
-      .dialog li:hover:not(.selected) {
-        background: #333333;
-      }
-      .text-truncate {
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        flex-grow: 1;
-        line-height: 1.5;
-      }
-      .remove-button {
-        margin-left: 10px;
-        background: none;
-        border: none;
-        color: white;
-        cursor: pointer;
-      }
-
-      .subtitle {
-        color: #cfd6ff !important;
-      }
-
-      .sidebar::-webkit-scrollbar {
-        width: 8px; /* Width of the scrollbar */
-        height: 8px; /* Height of the scrollbar (for horizontal scrollbar) */
-        border-radius: 10px; /* Rounded corners */
-      }
-
-      .sidebar::-webkit-scrollbar-thumb {
-        background-color: #888888; /* Color of the scrollbar thumb */
-        border-radius: 10px; /* Rounded corners */
-      }
-
-      .sidebar::-webkit-scrollbar-track {
-        background-color: #f0f0f0; /* Color of the scrollbar track */
-        border-radius: 10px; /* Rounded corners */
-      }
-    `;
+    style.textContent = dialogStyle;
     this.shadowRoot.appendChild(style);
   }
 

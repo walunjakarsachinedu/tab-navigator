@@ -15,6 +15,10 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.css$/,
+        use: 'raw-loader',
+      },
+      {
         test: /\.ts?$/,
         use: [
           // step 2: convert javascript to backward compatible
