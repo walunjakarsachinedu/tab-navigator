@@ -39,6 +39,11 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayI {
         z-index: 10000;
         display: none;
         width: 500px;
+        max-height: 70%;
+
+        overflow-y: auto;
+        scrollbar-width: thin; 
+        scrollbar-color: #888888 #f0f0f0;
       }
       @media (max-width: 768px) {
         .dialog {
@@ -68,7 +73,8 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayI {
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
-        width: 100%;
+        flex-grow: 1;
+        line-height: 1.5;
       }
       .remove-button {
         margin-left: 10px;
@@ -76,6 +82,26 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayI {
         border: none;
         color: white;
         cursor: pointer;
+      }
+
+      .subtitle {
+        color: #cfd6ff !important;
+      }
+
+      .sidebar::-webkit-scrollbar {
+        width: 8px; /* Width of the scrollbar */
+        height: 8px; /* Height of the scrollbar (for horizontal scrollbar) */
+        border-radius: 10px; /* Rounded corners */
+      }
+
+      .sidebar::-webkit-scrollbar-thumb {
+        background-color: #888888; /* Color of the scrollbar thumb */
+        border-radius: 10px; /* Rounded corners */
+      }
+
+      .sidebar::-webkit-scrollbar-track {
+        background-color: #f0f0f0; /* Color of the scrollbar track */
+        border-radius: 10px; /* Rounded corners */
       }
     `;
     this.shadowRoot.appendChild(style);
@@ -150,6 +176,10 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayI {
       const title = document.createElement('div');
       title.classList.add("text-truncate", "li-item-title")
       title.textContent = tab.title;
+      const subtitle = document.createElement('div');
+      subtitle.textContent = tab.url.replace(/^(https?|ftp):\/\//, '');
+      subtitle.classList.add("text-truncate", "subtitle", "pl-2");
+      title.appendChild(subtitle);
 
       const removeButton = document.createElement('button');
       removeButton.innerHTML = '&#x2715;'; // Unicode character for "✕"
