@@ -6,17 +6,19 @@ import Queue, { DataGetter } from "./util/queue";
  */
 class TabTracker {
   private _tabQue: Queue<TabData>;
+  private _isLoading: Promise<void>;
 
   constructor() {
     this._tabQue = new Queue<TabData>();
-    this._listenToChromeTabEvents();
+    this._isLoading = this.restoreState().finally(() => this._listenToChromeTabEvents());
   }
 
   /**
    * 
    * @returns The tab queue with the current active tab first, followed by previously visited tabs.
    */
-  getTabQue() {
+  async getTabQue(): Promise<TabData[]> {
+    try { await this._isLoading; } catch {}
     return this._tabQue.getQueData();
   }
 
@@ -38,6 +40,7 @@ class TabTracker {
       status: tab.status ?? "",
       favIconUrl: tab.favIconUrl ?? ""
     });
+    this.storeState();
   }
 
   private _onTabUpdated(tabId: number, changeInfo: chrome.tabs.TabChangeInfo, tab: chrome.tabs.Tab) {
@@ -46,15 +49,36 @@ class TabTracker {
       { getData: TabTracker.getTabByIdFunc(tabId) },
       changeInfo
     );
+    this.storeState();
   }
 
   private _onTabActivated(activeInfo: chrome.tabs.TabActiveInfo) {
     this._tabQue.moveFront({ getData: TabTracker.getTabByIdFunc(activeInfo.tabId) });
+    this.storeState();
   }
 
   private _onTabRemoved(tabId: number, removeInfo: chrome.tabs.TabRemoveInfo) {
     // console.log('Tab removed:', tabId);
     this._tabQue.remove({ getData: TabTracker.getTabByIdFunc(tabId) });
+    this.storeState();
+  }
+
+  private async storeState() {
+    const tabData = this._tabQue.getQueData();
+    const jsonData = JSON.stringify(tabData);
+    await chrome.storage.local.set({"tabQueue": jsonData});
+  }
+
+  private async restoreState() {
+    const jsonData = await chrome.storage.local.get('tabQueue');
+    if (jsonData && jsonData['tabQueue']) {
+      const tabData: TabData[] = JSON.parse(jsonData['tabQueue']);
+      // Validate all restored tabs are actually present or not
+      chrome.tabs.query({}, (tabs) => {
+        const validTabs = tabData.filter(tab => tabs.some(t => t.id === tab.id));
+        validTabs.forEach(tab => this._tabQue.add(tab));
+      });
+    }
   }
 
   static getTabByIdFunc(tabId: number): DataGetter<TabData> {

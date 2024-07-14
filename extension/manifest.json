@@ -3,7 +3,7 @@
   "name": "VSCode-like Tab Navigation",
   "version": "1.0",
   "description": "Navigate tabs like in Visual Studio Code",
-  "permissions": ["tabs", "commands"],
+  "permissions": ["tabs", "commands", "storage"],
   "background": {
     "service_worker": "background.js"
   },
