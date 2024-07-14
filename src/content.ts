@@ -58,9 +58,9 @@ var tabs: TabData[] = [];
 async function createOverlay() : Promise<HTMLElement> {
   tabs = await getTabs();
   overlay.show(tabs);
-  overlay.onItemSelected((tab) => {
-    console.log('Tab selected:', tab);
+  overlay.onItemSelected(async (tab) => {
     selectedTabIndex = tabs.indexOf(tab);
+    await hideOverlay();
   });
 
   overlay.element.addEventListener('mousedown', startDragging);

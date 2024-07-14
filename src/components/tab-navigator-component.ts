@@ -43,11 +43,8 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayI {
     list.addEventListener('click', (event) => {
       const target = event.target as HTMLElement;
   
-      if (target.tagName === 'LI' || target.classList.contains('li-item-title')) {
-        let liElement: HTMLElement | null = target;
-        if (target.classList.contains('li-item-title')) {
-          liElement = target.parentElement as HTMLElement;
-        }
+      if (target.matches('LI, .li-item-title, .favicon, .subtitle')) {
+        let liElement: HTMLElement = target.tagName === 'LI' ? target : target.closest('LI') as HTMLElement;
   
         const index = Array.from(list.children).indexOf(liElement);
         if (index !== -1) {
