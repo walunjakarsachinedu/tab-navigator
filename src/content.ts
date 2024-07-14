@@ -142,7 +142,7 @@ function  getTabs(): Promise<TabData[]> {
 
 async function selectTab(): Promise<void> {
   return new Promise((resolve, reject) => {
-      chrome.runtime.sendMessage({ action: "selectTab" , id: tabs[selectedTabIndex].id });
+    if(tabs[selectedTabIndex]) chrome.runtime.sendMessage({ action: "selectTab" , id: tabs[selectedTabIndex].id });
   });
 }
 
