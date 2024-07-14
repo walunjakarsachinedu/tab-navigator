@@ -148,6 +148,9 @@ async function selectTab(): Promise<void> {
 
 async function deleteTab(tab: TabData): Promise<void> {
   return new Promise<void>((resolve, reject) => {
-    chrome.runtime.sendMessage({ action: "deleteTab", id: tab.id});
+    if(selectedTabIndex >= tabs.length) selectedTabIndex = tabs.length - 1; 
+    chrome.runtime.sendMessage({ action: "deleteTab", id: tab.id}, async () => {
+      tabs = await getTabs();
+    });
   });
 }
