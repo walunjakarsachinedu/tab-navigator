@@ -82,9 +82,9 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayI {
   }
   
   
-  show(tabs: TabData[]): void {
+  show(tabs: TabData[], _selectedTabIndex: number = 0): void {
     this.tabs = tabs;
-    this.selectedTabIndex = 0;
+    this.selectedTabIndex = _selectedTabIndex;
     const list = this.shadowRoot.querySelector('ul')!;
     list.innerHTML = '';
     tabs.forEach((tab) => {
@@ -145,8 +145,8 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayI {
 
   removeItem(tabIndex: number): void {
     this.tabs.splice(tabIndex, 1);
-    this.show(this.tabs);
     if(this.selectedTabIndex >= this.tabs.length) this.selectedTabIndex = this.tabs.length - 1; 
+    this.show(this.tabs, this.selectedTabIndex);
     if(this.tabs.length > 0) this.selectItem(this.selectedTabIndex);
   }
 }

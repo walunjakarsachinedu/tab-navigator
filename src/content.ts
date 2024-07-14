@@ -64,6 +64,8 @@ async function createOverlay() : Promise<HTMLElement> {
   });
 
   overlay.onItemDeleted(async (tab) => {
+    tabs = tabs.filter(t => t != tab);
+    if(selectedTabIndex >= tabs.length) selectedTabIndex = tabs.length - 1; 
     await deleteTab(tab);
   });
 
@@ -148,9 +150,6 @@ async function selectTab(): Promise<void> {
 
 async function deleteTab(tab: TabData): Promise<void> {
   return new Promise<void>((resolve, reject) => {
-    if(selectedTabIndex >= tabs.length) selectedTabIndex = tabs.length - 1; 
-    chrome.runtime.sendMessage({ action: "deleteTab", id: tab.id}, async () => {
-      tabs = await getTabs();
-    });
+    chrome.runtime.sendMessage({ action: "deleteTab", id: tab.id});
   });
 }

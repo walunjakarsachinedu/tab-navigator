@@ -3,7 +3,7 @@ import { EventHandler } from "../util/event-emitter";
 
 export interface TabNavigatorOverlayI {
   /** Display the overlay with the provided list of tabs. */
-  show: (tabs: TabData[]) => void;
+  show: (tabs: TabData[], _selectedTabIndex: number) => void;
   
   /** Hide the overlay. */
   hide: () => void;
