@@ -63,6 +63,10 @@ async function createOverlay() : Promise<HTMLElement> {
     await hideOverlay();
   });
 
+  overlay.onItemDeleted(async (tab) => {
+    await deleteTab(tab);
+  });
+
   overlay.element.addEventListener('mousedown', startDragging);
   document.addEventListener('mousemove', drag);
   document.addEventListener('mouseup', stopDragging);
@@ -139,5 +143,11 @@ function  getTabs(): Promise<TabData[]> {
 async function selectTab(): Promise<void> {
   return new Promise((resolve, reject) => {
       chrome.runtime.sendMessage({ action: "selectTab" , id: tabs[selectedTabIndex].id });
+  });
+}
+
+async function deleteTab(tab: TabData): Promise<void> {
+  return new Promise<void>((resolve, reject) => {
+    chrome.runtime.sendMessage({ action: "deleteTab", id: tab.id});
   });
 }

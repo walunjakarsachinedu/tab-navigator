@@ -8,6 +8,9 @@ async function handleContentScriptMessage(request: any, sendResponse: (response?
   else if (request.action === "selectTab") {
     chrome.tabs.update(request.id, { active: true });
   }  
+  else if (request.action === "deleteTab") {
+    chrome.tabs.remove(request.id);
+  }  
 }
 
 const tabTracker = new TabTracker();

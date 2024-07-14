@@ -61,8 +61,8 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayI {
         const liElement = target.parentElement as HTMLElement;
         const index = Array.from(list.children).indexOf(liElement);
         if (index !== -1) {
-          this.removeItem(index);
           this.itemDeletedEmitter.emit(this.tabs[index]);
+          this.removeItem(index);
         }
       }
     });
@@ -146,5 +146,7 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayI {
   removeItem(tabIndex: number): void {
     this.tabs.splice(tabIndex, 1);
     this.show(this.tabs);
+    if(this.selectedTabIndex >= this.tabs.length) this.selectedTabIndex = this.tabs.length - 1; 
+    if(this.tabs.length > 0) this.selectItem(this.selectedTabIndex);
   }
 }
