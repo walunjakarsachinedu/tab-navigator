@@ -138,9 +138,6 @@ function  getTabs(): Promise<TabData[]> {
 
 async function selectTab(): Promise<void> {
   return new Promise((resolve, reject) => {
-      chrome.runtime.sendMessage({ action: "selectTab" , id: tabs[selectedTabIndex].id }, function(response) {
-        if (response) resolve(response);
-        else reject(new Error("Failed to select tab"));
-      });
+      chrome.runtime.sendMessage({ action: "selectTab" , id: tabs[selectedTabIndex].id });
   });
 }
