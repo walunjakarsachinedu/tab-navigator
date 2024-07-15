@@ -1,4 +1,4 @@
-import TabTracker from "./tab-tracker";
+import TabTracker from "./browser/tab-tracker";
 
 
 async function handleContentScriptMessage(request: any, sendResponse: (response?: any) => void) {

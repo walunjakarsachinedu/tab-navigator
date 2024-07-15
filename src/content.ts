@@ -1,6 +1,6 @@
 import { TabNavigatorOverlay } from "./components/tab-navigator-component";
-import MyKeyboard from "./keyboard";
-import { TabData } from "./types";
+import MyKeyboard from "./browser/keyboard";
+import { TabData } from "./types/types";
 
 let overlayVisible = false;
 let draggedElement: HTMLElement | null = null;

@@ -1,4 +1,4 @@
-import { TabData } from "../types";
+import { TabData } from "../types/types";
 import { EventHandler } from "../util/event-emitter";
 
 export interface TabNavigatorOverlayI {

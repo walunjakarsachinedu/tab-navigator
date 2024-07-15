@@ -1,4 +1,4 @@
-import { EventEmitter, EventHandler } from "./util/event-emitter";
+import { EventEmitter, EventHandler } from "../util/event-emitter";
 
 /**
  * @class Handles keyboard interactions, tracking key presses/releases and emitting events.

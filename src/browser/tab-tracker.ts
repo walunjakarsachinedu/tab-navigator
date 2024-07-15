@@ -1,5 +1,5 @@
-import { TabData } from "./types";
-import Queue, { DataGetter } from "./util/queue";
+import { TabData } from "../types/types";
+import Queue, { DataGetter } from "../util/queue";
 
 /**
  * @class This class starts listening to Chrome tab events once an instance is created.

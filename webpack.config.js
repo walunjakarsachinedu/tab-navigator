@@ -5,7 +5,6 @@ module.exports = {
   entry: {
     background: path.resolve(__dirname, "src/background.ts"),
     content: path.resolve(__dirname, "src/content.ts"),
-    "tab-navigator-component": path.resolve(__dirname, "src/components/tab-navigator-component.ts"),
   },
   output: {
     path: path.resolve(__dirname, "extension"),

@@ -1,7 +1,7 @@
 import { TabNavigatorOverlayI } from "../interface/tab-navigator-overlay";
-import { TabData } from "../types";
+import { TabData } from "../types/types";
 import { EventEmitter, EventHandler } from "../util/event-emitter";
-import dialogStyle from './dialog.css';
+import dialogStyle from '../styles/dialog.css';
 
 export class TabNavigatorOverlay implements TabNavigatorOverlayI {
   private container: HTMLElement;
