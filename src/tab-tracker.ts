@@ -76,7 +76,18 @@ class TabTracker {
       // Validate all restored tabs are actually present or not
       chrome.tabs.query({}, (tabs) => {
         const validTabs = tabData.filter(tab => tabs.some(t => t.id === tab.id));
+        const remainingTabs = tabs
+          .filter(tab => tabData
+            .every(t => t.id != tab.id))
+          .map<TabData>(tab => ({
+            id: tab.id!,
+            url: tab.url ?? "",
+            title: tab.title ?? "",
+            status: tab.status ?? "",
+            favIconUrl: tab.favIconUrl ?? ""
+          }));
         validTabs.forEach(tab => this._tabQue.add(tab));
+        remainingTabs.forEach(tab => this._tabQue.add(tab));
       });
     }
   }
