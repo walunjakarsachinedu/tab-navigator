@@ -3,7 +3,6 @@ import MyKeyboard from "./browser/keyboard";
 import { TabData } from "./types/types";
 
 let overlayVisible = false;
-let draggedElement: HTMLElement | null = null;
 let overlay = new TabNavigatorOverlay();
 let keyboard = new MyKeyboard();
 overlay.element.id = 'tab-navigator-overlay';
@@ -69,36 +68,7 @@ async function createOverlay() : Promise<HTMLElement> {
     await deleteTab(tab);
   });
 
-  overlay.element.addEventListener('mousedown', startDragging);
-  document.addEventListener('mousemove', drag);
-  document.addEventListener('mouseup', stopDragging);
-
   return overlay.element;
-}
-
-function startDragging(e: MouseEvent) {
-  e.preventDefault();
-  draggedElement = document.getElementById('tab-navigator-overlay');
-  draggedElement!.style.cursor = 'grabbing';
-  const rect = draggedElement!.getBoundingClientRect();
-  draggedElement!.dataset.offsetX = (e.clientX - rect.left - rect.width/2).toString();
-  draggedElement!.dataset.offsetY = (e.clientY - rect.top).toString();
-}
-
-function drag(e: MouseEvent) {
-  if (draggedElement) {
-    const x = e.clientX - parseFloat(draggedElement!.dataset.offsetX!);
-    const y = e.clientY - parseFloat(draggedElement!.dataset.offsetY!);
-    draggedElement.style.left = `${x}px`;
-    draggedElement.style.top = `${y}px`;
-  }
-}
-
-function stopDragging() {
-  if (draggedElement) {
-    draggedElement.style.cursor = 'grab';
-    draggedElement = null;
-  }
 }
 
 function selectNextItem(): void {
