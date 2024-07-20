@@ -25,10 +25,6 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayI {
     this.shadowRoot.appendChild(style);
   }
 
-  get element() {
-    return this.container;
-  }
-
   private initializeUI() {
     const dialog = document.createElement('div');
     dialog.classList.add('dialog');
@@ -39,6 +35,10 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayI {
     this.shadowRoot.appendChild(dialog);
     document.body.appendChild(this.container);
   
+    this.addEventHandler(list, dialog);
+  }
+
+  private addEventHandler(list: HTMLUListElement, dialog: HTMLDivElement) {
     // Add event listener for list item clicks
     list.addEventListener('click', (event) => {
       const target = event.target as HTMLElement;
@@ -81,6 +81,10 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayI {
     });
   }
   
+
+  get element() {
+    return this.container;
+  }
   
   show(tabs: TabData[], _selectedTabIndex: number = 0): void {
     this.tabs = tabs;
@@ -88,31 +92,7 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayI {
     const list = this.shadowRoot.querySelector('ul')!;
     list.innerHTML = '';
     tabs.forEach((tab) => {
-      const favIcon = document.createElement('img');
-      favIcon.src = tab.favIconUrl;
-      favIcon.classList.add('favicon');
-      favIcon.style.width = '16px';
-      favIcon.style.height = '16px';
-      favIcon.style.marginRight = '16px';
-
-      const title = document.createElement('div');
-      title.classList.add("text-truncate", "li-item-title")
-      title.textContent = tab.title;
-
-      const subtitle = document.createElement('div');
-      subtitle.textContent = tab.url.replace(/^(https?|ftp):\/\//, '');
-      subtitle.classList.add("text-truncate", "subtitle", "pl-2");
-      title.appendChild(subtitle);
-
-      const removeButton = document.createElement('button');
-      removeButton.innerHTML = '&#x2715;'; // Unicode character for "✕"
-      removeButton.classList.add('remove-button');
-
-      const item = document.createElement('li');
-      item.appendChild(favIcon);
-      item.appendChild(title);
-      item.appendChild(removeButton);
-
+      const item = this._createTabUiItem(tab);
       list.appendChild(item);
     });
     this.shadowRoot.querySelector('.dialog')!.setAttribute('style', 'display: block;');
@@ -120,6 +100,35 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayI {
 
   hide(): void {
     this.shadowRoot.querySelector('.dialog')!.setAttribute('style', 'display: none;');
+  }
+
+  _createTabUiItem(tab: TabData) {
+    const favIcon = document.createElement('img');
+    favIcon.src = tab.favIconUrl;
+    favIcon.classList.add('favicon');
+    favIcon.style.width = '16px';
+    favIcon.style.height = '16px';
+    favIcon.style.marginRight = '16px';
+
+    const title = document.createElement('div');
+    title.classList.add("text-truncate", "li-item-title")
+    title.textContent = tab.title;
+
+    const subtitle = document.createElement('div');
+    subtitle.textContent = tab.url.replace(/^(https?|ftp):\/\//, '');
+    subtitle.classList.add("text-truncate", "subtitle", "pl-2");
+    title.appendChild(subtitle);
+
+    const removeButton = document.createElement('button');
+    removeButton.innerHTML = '&#x2715;'; // Unicode character for "✕"
+    removeButton.classList.add('remove-button');
+
+    const item = document.createElement('li');
+    item.appendChild(favIcon);
+    item.appendChild(title);
+    item.appendChild(removeButton);
+
+    return item;
   }
 
   selectItem(tabIndex: number): void {
