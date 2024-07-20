@@ -1,42 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap');
+
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    width: 350px;
+    font-family: 'Fira Code', monospace;
+    width: 500px;
     margin: 0;
     padding: 20px;
-    background: linear-gradient(135deg, #2c3e50, #34495e);
-    color: white;
+    background: #1e1e1e;
+    color: #ffffff;
 }
 .container {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: #2d2d2d;
     border-radius: 10px;
     padding: 20px;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    backdrop-filter: blur(4px);
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border: 1px solid #333;
 }
 h1 {
     font-size: 24px;
     margin-top: 0;
     text-align: center;
     margin-bottom: 20px;
+    color: #cfd6ff;
 }
 .shortcut {
     margin-bottom: 15px;
 }
+.key-combo {
+    margin-bottom: 5px;
+}
 .key {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: #444;
     padding: 3px 6px;
     border-radius: 4px;
-    font-family: monospace;
     font-weight: bold;
+    color: #cfd6ff;
 }
 .description {
     margin-top: 5px;
     font-size: 14px;
-}
-
-.bold-font {
-  padding-bottom: 0px;
-  display: inline;
-  font-size: 14px;
+    color: #cfd6ff;
 }
