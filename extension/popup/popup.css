@@ -1,6 +1,6 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    width: 300px;
+    width: 350px;
     margin: 0;
     padding: 20px;
     background: linear-gradient(135deg, #2c3e50, #34495e);
@@ -33,4 +33,10 @@ h1 {
 .description {
     margin-top: 5px;
     font-size: 14px;
+}
+
+.bold-font {
+  padding-bottom: 0px;
+  display: inline;
+  font-size: 14px;
 }
