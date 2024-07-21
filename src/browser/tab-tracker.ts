@@ -1,5 +1,6 @@
 import { TabData } from "../types/types";
 import Queue, { DataGetter } from "../util/queue";
+import { getCurrentWindowId } from "../util/utils";
 
 /**
  * @class This class starts listening to Chrome tab events once an instance is created.
@@ -15,11 +16,12 @@ class TabTracker {
 
   /**
    * 
-   * @returns The tab queue with the current active tab first, followed by previously visited tabs.
+   * @returns The tab queue for current window with the current active tab first, followed by previously visited tabs.
    */
   async getTabQue(): Promise<TabData[]> {
     try { await this._isLoading; } catch {}
-    return this._tabQue.getQueData();
+    const windowId = await getCurrentWindowId();
+    return this._tabQue.getQueData().filter(tabs => tabs.windowId == windowId);
   }
 
   private _listenToChromeTabEvents() {
@@ -29,6 +31,7 @@ class TabTracker {
     chrome.tabs.onRemoved.addListener(this._onTabRemoved.bind(this));
     // fired when tab get into focus
     chrome.tabs.onActivated.addListener(this._onTabActivated.bind(this));
+    chrome.tabs.onAttached.addListener(this._onTabMoved.bind(this));
   }
 
   private _onTabCreated(tab: chrome.tabs.Tab) {
@@ -38,7 +41,8 @@ class TabTracker {
       url: tab.url ?? "",
       title: tab.title ?? "",
       status: tab.status ?? "",
-      favIconUrl: tab.favIconUrl ?? ""
+      favIconUrl: tab.favIconUrl ?? "",
+      windowId: tab.windowId,
     });
     this.storeState();
   }
@@ -63,6 +67,13 @@ class TabTracker {
     this.storeState();
   }
 
+  private _onTabMoved(tabId: number, attachInfo: chrome.tabs.TabAttachInfo) {
+    this._tabQue.update(
+      { getData: TabTracker.getTabByIdFunc(tabId) },
+      {windowId: attachInfo.newWindowId}
+    );
+  }
+
   private async storeState() {
     const tabData = this._tabQue.getQueData();
     const jsonData = JSON.stringify(tabData);
@@ -85,7 +96,8 @@ class TabTracker {
               url: tab.url ?? "",
               title: tab.title ?? "",
               status: tab.status ?? "",
-              favIconUrl: tab.favIconUrl ?? ""
+              favIconUrl: tab.favIconUrl ?? "", 
+              windowId: tab.windowId ?? "",
             }));
           validTabs.forEach(tab => this._tabQue.add(tab));
           remainingTabs.forEach(tab => this._tabQue.add(tab));
