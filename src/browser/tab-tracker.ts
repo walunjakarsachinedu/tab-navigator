@@ -69,26 +69,29 @@ class TabTracker {
     await chrome.storage.local.set({"tabQueue": jsonData});
   }
 
-  private async restoreState() {
+  private async restoreState(): Promise<void> {
     const jsonData = await chrome.storage.local.get('tabQueue');
     if (jsonData && jsonData['tabQueue']) {
       const tabData: TabData[] = JSON.parse(jsonData['tabQueue']);
       // Validate all restored tabs are actually present or not
-      chrome.tabs.query({}, (tabs) => {
-        const validTabs = tabData.filter(tab => tabs.some(t => t.id === tab.id));
-        const remainingTabs = tabs
-          .filter(tab => tabData
-            .every(t => t.id != tab.id))
-          .map<TabData>(tab => ({
-            id: tab.id!,
-            url: tab.url ?? "",
-            title: tab.title ?? "",
-            status: tab.status ?? "",
-            favIconUrl: tab.favIconUrl ?? ""
-          }));
-        validTabs.forEach(tab => this._tabQue.add(tab));
-        remainingTabs.forEach(tab => this._tabQue.add(tab));
-      });
+      return new Promise((resolve) => {
+        chrome.tabs.query({}, (tabs) => {
+          const validTabs = tabData.filter(tab => tabs.some(t => t.id === tab.id));
+          const remainingTabs = tabs
+            .filter(tab => tabData
+              .every(t => t.id != tab.id))
+            .map<TabData>(tab => ({
+              id: tab.id!,
+              url: tab.url ?? "",
+              title: tab.title ?? "",
+              status: tab.status ?? "",
+              favIconUrl: tab.favIconUrl ?? ""
+            }));
+          validTabs.forEach(tab => this._tabQue.add(tab));
+          remainingTabs.forEach(tab => this._tabQue.add(tab));
+          resolve();
+        });
+      }); 
     }
   }
 
