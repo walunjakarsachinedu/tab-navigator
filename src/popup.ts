@@ -2,7 +2,6 @@ import { TabNavigatorOverlay } from "./components/tab-navigator-component";
 import MyKeyboard from "./browser/keyboard";
 import { TabData } from "./types/types";
 
-let overlayVisible = false;
 let overlay = new TabNavigatorOverlay();
 let keyboard = new MyKeyboard(["alt"]);
 overlay.element.id = 'tab-navigator-overlay';
@@ -14,15 +13,10 @@ let selectedTabIndex = 0;
 })();
 
 async function showOverlay() {
-  if(overlayVisible) return;
-
   const overlayEl = await createOverlay();
   document.body.appendChild(overlayEl);
   overlay.selectItem(selectedTabIndex);
-  overlayVisible = true;
   document.addEventListener('mousedown', handleOutsideClick);
-  // document.addEventListener('keydown', handleKeyPress);
-  // updateSelectedTab();
 }
 
 async function hideOverlay() {
