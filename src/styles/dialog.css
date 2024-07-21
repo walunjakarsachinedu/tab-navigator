@@ -1,31 +1,16 @@
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap');
-
 .dialog {
   font-family: "Fira Code", monospace;
   font-size: 12px;
-  position: fixed;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
   background: #1e1e1e;
   color: #ffffff;
-  border: 1px solid #333;
-  border-radius: 5px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  /* border: 1px solid #333; */
+  /* border-radius: 5px; */
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); */
   padding: 10px;
-  z-index: 2147483647;
-  display: none;
-  width: 500px;
-  max-height: 70%;
 
   overflow-y: auto;
   scrollbar-width: thin; 
   scrollbar-color: #888888 #f0f0f0;
-}
-@media (max-width: 768px) {
-  .dialog {
-      width: 70%;
-  }
 }
 
 .dialog ul {

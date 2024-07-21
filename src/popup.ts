@@ -4,23 +4,14 @@ import { TabData } from "./types/types";
 
 let overlayVisible = false;
 let overlay = new TabNavigatorOverlay();
-let keyboard = new MyKeyboard();
+let keyboard = new MyKeyboard(["alt"]);
 overlay.element.id = 'tab-navigator-overlay';
 let selectedTabIndex = 0;
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === "toggleOverlay") {
-    toggleOverlay();
-  }
-});
-
-function toggleOverlay() {
-  if (overlayVisible) {
-    hideOverlay();
-  } else {
-    showOverlay();
-  }
-}
+(async () => {
+  await showOverlay();
+  selectNextItem();
+})();
 
 async function showOverlay() {
   if(overlayVisible) return;
@@ -35,15 +26,8 @@ async function showOverlay() {
 }
 
 async function hideOverlay() {
-  if(!overlayVisible) return;
-  const overlay = document.getElementById('tab-navigator-overlay');
-  if (overlay) {
-    document.body.removeChild(overlay);
-  }
-  overlayVisible = false;
-  document.removeEventListener('mousedown', handleOutsideClick);
-  // document.removeEventListener('keydown', handleKeyPress);
-  await selectTab();
+  if(selectedTabIndex!=0) await selectTab();
+  window.close();
 }
 
 function handleOutsideClick(e: MouseEvent) {
@@ -83,34 +67,25 @@ function selectPreviousItem(): void {
 
 keyboard.listenKeyDown(async (keys: Set<String>) => {
   if(keys.has("alt") && keys.has("j")) {
-    (document.activeElement as HTMLElement)?.blur();
-    if(!overlayVisible) {
-      selectedTabIndex = 0;
-      await showOverlay(); 
-    }
     selectNextItem();
   }
   if(keys.has("alt") && keys.has("k")) {
-    if(!overlayVisible) {
-      selectedTabIndex = 0;
-      await showOverlay(); 
-    }
     selectPreviousItem();
   }
 });
 
-keyboard.listenKeyUp((keys: String) => {
-  if(keys == "alt") hideOverlay();
+keyboard.listenKeyUp((key: String) => {
+  if(key == "alt") hideOverlay();
 });
 
 function  getTabs(): Promise<TabData[]> {
-    return new Promise<TabData[]>((resolve, reject) => {
-      chrome.runtime.sendMessage({ action: "getTabs" }, function(response) {
-        if (response) resolve(response.tabs);
-        else reject(new Error("Failed to get tabs"));
-      });
+  return new Promise<TabData[]>((resolve, reject) => {
+    chrome.runtime.sendMessage({ action: "getTabs" }, function(response) {
+      if (response) resolve(response.tabs);
+      else reject(new Error("Failed to get tabs"));
     });
-  }
+  });
+}
 
 async function selectTab(): Promise<void> {
   return new Promise((resolve, reject) => {

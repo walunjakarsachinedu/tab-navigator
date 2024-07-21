@@ -8,8 +8,8 @@ class MyKeyboard {
   private _keyDownEvent: EventEmitter<Set<String>>;
   private _keyUpEvent: EventEmitter<String>;
   
-  constructor() {
-    this._keysPressed = new Set();
+  constructor(initiallyPressedKeys?: String[]) {
+    this._keysPressed = new Set(initiallyPressedKeys ?? []);
     this._keyDownEvent = new EventEmitter<Set<String>>();
     this._keyUpEvent = new EventEmitter<String>();
 
@@ -47,8 +47,8 @@ class MyKeyboard {
     const keyCode = this._getKeyName(e.code);
     if(!this._keysPressed.has(keyCode)) {
         this._keysPressed.add(keyCode);
-        this._keyDownEvent.emit(this._keysPressed);
     }
+    this._keyDownEvent.emit(this._keysPressed);
   }
   private _onKeyUp(e: KeyboardEvent): void {
     if(e.code == null) return;
