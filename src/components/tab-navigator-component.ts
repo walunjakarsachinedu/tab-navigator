@@ -10,6 +10,7 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayI {
   private _selectedTabIndex: number = 0;
   private _itemSelectedEmitter: EventEmitter<TabData> = new EventEmitter();
   private _itemDeletedEmitter: EventEmitter<TabData> = new EventEmitter();
+  private _onItemHighlighted: EventEmitter<TabData> = new EventEmitter();
 
   constructor() {
     this._container = document.createElement('div');
@@ -141,6 +142,17 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayI {
       }
     });
     this._selectedTabIndex = tabIndex;
+    this._onItemHighlighted.emit(this.tabs[tabIndex]);
+  }
+
+  selectNextItem(): void {
+    this._selectedTabIndex = (this._selectedTabIndex + 1) % this.tabs.length;
+    this.selectItem(this._selectedTabIndex);
+  }
+  
+  selectPreviousItem(): void {
+    this._selectedTabIndex = (this._selectedTabIndex - 1 + this.tabs.length) % this.tabs.length;
+    this.selectItem(this._selectedTabIndex);
   }
 
 
@@ -150,6 +162,10 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayI {
 
   onItemDeleted(listener: EventHandler<TabData>): void {
     this._itemDeletedEmitter.addListener(listener);
+  }
+
+  onItemHighlighted(listener: EventHandler<TabData>): void {
+    this._onItemHighlighted.addListener(listener);
   }
 
   removeItem(tabIndex: number): void {

@@ -4,72 +4,55 @@ import { TabData } from "./types/types";
 
 let overlay = new TabNavigatorOverlay();
 let keyboard = new MyKeyboard(["alt"]);
+let highlightedTab: TabData | undefined;
+
 overlay.element.id = 'tab-navigator-overlay';
-let selectedTabIndex = 0;
 
 (async () => {
   await showOverlay();
-  selectNextItem();
+  overlay.selectNextItem();
 })();
 
 async function showOverlay() {
   const overlayEl = await createOverlay();
   document.body.appendChild(overlayEl);
-  overlay.selectItem(selectedTabIndex);
-  document.addEventListener('mousedown', handleOutsideClick);
-}
-
-async function hideOverlay() {
-  if(selectedTabIndex!=0) await selectTab();
-  window.close();
-}
-
-function handleOutsideClick(e: MouseEvent) {
-  const overlay = document.getElementById('tab-navigator-overlay');
-  if (overlay && !overlay.contains(e.target as Node)) {
-    hideOverlay();
-  }
+  overlay.selectItem(0);
 }
 
 var tabs: TabData[] = [];
 async function createOverlay() : Promise<HTMLElement> {
   tabs = await getTabs();
   overlay.show(tabs);
-  overlay.onItemSelected(async (tab) => {
-    selectedTabIndex = tabs.indexOf(tab);
-    await hideOverlay();
-  });
-
-  overlay.onItemDeleted(async (tab) => {
-    tabs = tabs.filter(t => t != tab);
-    if(selectedTabIndex >= tabs.length) selectedTabIndex = tabs.length - 1; 
-    await deleteTab(tab);
-  });
+  addEventHandler();
 
   return overlay.element;
 }
 
-function selectNextItem(): void {
-  selectedTabIndex = (selectedTabIndex + 1) % overlay.tabs.length;
-  overlay.selectItem(selectedTabIndex);
+function addEventHandler() {
+  overlay.onItemSelected(async (tab) => {
+    await selectTabThenHideOverlay(tab);
+  });
+
+  overlay.onItemDeleted(async (tab) => {
+    tabs = tabs.filter(t => t != tab);
+    await deleteTab(tab);
+  });
+
+  overlay.onItemHighlighted((tab) => highlightedTab = tab);
 }
 
-function selectPreviousItem(): void {
-  selectedTabIndex = (selectedTabIndex - 1 + overlay.tabs.length) % overlay.tabs.length;
-  overlay.selectItem(selectedTabIndex);
-}
 
 keyboard.listenKeyDown(async (keys: Set<String>) => {
   if(keys.has("alt") && keys.has("j")) {
-    selectNextItem();
+    overlay.selectNextItem();
   }
   if(keys.has("alt") && keys.has("k")) {
-    selectPreviousItem();
+    overlay.selectPreviousItem();
   }
 });
 
 keyboard.listenKeyUp((key: String) => {
-  if(key == "alt") hideOverlay();
+  if(key == "alt") selectTabThenHideOverlay();
 });
 
 function  getTabs(): Promise<TabData[]> {
@@ -81,9 +64,22 @@ function  getTabs(): Promise<TabData[]> {
   });
 }
 
-async function selectTab(): Promise<void> {
+
+let activeTabId: number|undefined;
+chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+  activeTabId = tabs[0].id;
+});
+
+async function selectTabThenHideOverlay(tab?: TabData) {
+  const isCurrentTab = (tab??highlightedTab)?.id == activeTabId;
+  if(!isCurrentTab) await selectTab(tab);
+  window.close();
+}
+
+async function selectTab(tab?: TabData): Promise<void> {
   return new Promise((resolve, reject) => {
-    if(tabs[selectedTabIndex]) chrome.runtime.sendMessage({ action: "selectTab" , id: tabs[selectedTabIndex].id });
+    tab ??= highlightedTab;
+    if(tab) chrome.runtime.sendMessage({ action: "selectTab" , id: tab.id });
   });
 }
 
