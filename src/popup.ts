@@ -8,6 +8,8 @@ let highlightedTab: TabData | undefined;
 
 overlay.element.id = 'tab-navigator-overlay';
 
+let isSearchBarVisible: boolean = false;
+
 (async () => {
   await showOverlay();
   overlay.selectNextItem();
@@ -43,6 +45,11 @@ function addEventHandler() {
 
 
 keyboard.listenKeyDown(async (keys: Set<String>) => {
+  if(keys.has("alt") && keys.has("p")) {
+    isSearchBarVisible = !isSearchBarVisible;
+    if(isSearchBarVisible) overlay.showSearchBar();
+    else overlay.hideSearchBar();
+  }
   if(keys.has("alt") && keys.has("j")) {
     overlay.selectNextItem();
   }
@@ -52,7 +59,7 @@ keyboard.listenKeyDown(async (keys: Set<String>) => {
 });
 
 keyboard.listenKeyUp((key: String) => {
-  if(key == "alt") selectTabThenHideOverlay();
+  if(key == "alt" && !isSearchBarVisible) selectTabThenHideOverlay();
 });
 
 function  getTabs(): Promise<TabData[]> {

@@ -1,6 +1,6 @@
 import { TabData } from "../types/types";
 import Queue, { DataGetter } from "../util/queue";
-import { getCurrentWindowId } from "../util/utils";
+import { getCurrentWindowId, removeSchemaFromUrl } from "../util/utils";
 
 /**
  * @class This class starts listening to Chrome tab events once an instance is created.
@@ -36,6 +36,7 @@ class TabTracker {
 
   private _onTabCreated(tab: chrome.tabs.Tab) {
     // console.log('Tab created:', tab.id);
+    if(tab.url) tab.url = removeSchemaFromUrl(tab.url);
     this._tabQue.add({
       id: tab.id!,
       url: tab.url ?? "",
@@ -49,6 +50,7 @@ class TabTracker {
 
   private _onTabUpdated(tabId: number, changeInfo: chrome.tabs.TabChangeInfo, tab: chrome.tabs.Tab) {
     // console.log('Tab updated:', tabId);
+    if(changeInfo.url) changeInfo.url = removeSchemaFromUrl(changeInfo.url);
     this._tabQue.update(
       { getData: TabTracker.getTabByIdFunc(tabId) },
       changeInfo
