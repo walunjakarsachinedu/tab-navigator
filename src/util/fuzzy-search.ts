@@ -35,10 +35,10 @@ function _getMatchIndices(text: string, search: string): number[] {
 
 function _calculateRank(match: {title: number[], url: number[]}): number {
   const titleScore = match.title.length > 0 
-    ? 1000 * (1/(match.title[0]+1) + match.title.length + _closenessScore(match.title)) 
+    ? (1/(match.title[0]+1) + match.title.length + _closenessScore(match.title)) 
     : 0;
   const urlScore = match.url.length > 0 
-    ? 500 * (1/(match.url[0]+1) + match.url.length + _closenessScore(match.url))
+    ? (1/(match.url[0]+1) + match.url.length + _closenessScore(match.url))
     : 0;
   return titleScore + urlScore;
 }
