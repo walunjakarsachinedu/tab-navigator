@@ -2,7 +2,7 @@ import { TabNavigatorOverlayI } from "../interface/tab-navigator-overlay";
 import { Match, TabData } from "../types/types";
 import { EventEmitter, EventHandler } from "../util/event-emitter";
 import dialogStyle from '../styles/dialog.css';
-import { fuzzySearch } from "../util/utils";
+import { fuzzySearch } from "../util/fuzzy-search";
 
 export class TabNavigatorOverlay implements TabNavigatorOverlayI {
   public tabs: TabData[] = [];
