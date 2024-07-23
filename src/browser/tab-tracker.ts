@@ -51,6 +51,10 @@ class TabTracker {
   private _onTabUpdated(tabId: number, changeInfo: chrome.tabs.TabChangeInfo, tab: chrome.tabs.Tab) {
     // console.log('Tab updated:', tabId);
     if(changeInfo.url) changeInfo.url = removeSchemaFromUrl(changeInfo.url);
+    if(changeInfo.url == 'chrome://newtab/') {
+      changeInfo.favIconUrl = '';
+      changeInfo.title = 'New Tab';
+    }
     this._tabQue.update(
       { getData: TabTracker.getTabByIdFunc(tabId) },
       changeInfo
