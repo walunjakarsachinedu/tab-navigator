@@ -6,12 +6,14 @@ import { fuzzySearch } from "../util/fuzzy-search";
 
 export class TabNavigatorOverlay implements TabNavigatorOverlayI {
   public tabs: TabData[] = [];
+  private _selectedTabIndex: number = 0;
+
   private _container: HTMLElement;
   private _shadowRoot: ShadowRoot;
-  private _selectedTabIndex: number = 0;
+  private searchBar!: HTMLInputElement;
+
   private _itemSelectedEmitter: EventEmitter<TabData> = new EventEmitter();
   private _itemDeletedEmitter: EventEmitter<TabData> = new EventEmitter();
-  private searchBar!: HTMLInputElement;
   private _onItemHighlighted: EventEmitter<TabData> = new EventEmitter();
 
   constructor() {

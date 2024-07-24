@@ -1,4 +1,5 @@
 import { EventEmitter, EventHandler } from "../util/event-emitter";
+import { getKeyName } from "../util/utils";
 
 /**
  * @class Handles keyboard interactions, tracking key presses/releases and emitting events.
@@ -44,7 +45,7 @@ class MyKeyboard {
 
   private _onKeyDown(e: KeyboardEvent): void {
     if(e.code == null) return;
-    const keyCode = this._getKeyName(e.code);
+    const keyCode = getKeyName(e.code);
     if(!this._keysPressed.has(keyCode)) {
         this._keysPressed.add(keyCode);
     }
@@ -52,27 +53,11 @@ class MyKeyboard {
   }
   private _onKeyUp(e: KeyboardEvent): void {
     if(e.code == null) return;
-    const keyCode = this._getKeyName(e.code);
+    const keyCode = getKeyName(e.code);
     if(this._keysPressed.has(keyCode)) {
         this._keysPressed.delete(keyCode);
         this._keyUpEvent.emit(keyCode);
     }
-  }
-
-  private _keyCodeToName: {[key: string]: string} =  {
-    "MetaLeft": "Meta",
-    "MetaRight": "Meta",
-    "AltLeft": "Alt",
-    "AltRight": "Alt",
-    "ShiftLeft": "Shift",
-    "ShiftRight": "Shift",
-    "CtrlLeft": "Ctrl",
-    "CtrlRight": "Ctrl",
-  };
-  private _getKeyName(keyCode: string): string {
-    if(keyCode.startsWith("Key")) keyCode = keyCode.slice(3);
-    else if(keyCode in this._keyCodeToName) keyCode = this._keyCodeToName[keyCode];
-    return keyCode.toLowerCase();
   }
 }
 
