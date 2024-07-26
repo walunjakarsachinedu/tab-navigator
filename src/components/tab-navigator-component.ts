@@ -159,7 +159,12 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayI {
     favIcon.style.width = '16px';
     favIcon.style.height = '16px';
     favIcon.style.marginRight = '16px';
+    favIcon.onerror = function() {
+      this.onerror = null; // Prevents infinite loop if the fallback image also fails
+      favIcon.src = chrome.runtime.getURL('popup/image-not-found.png');
+    }
 
+    
     const title = document.createElement('div');
     title.classList.add("text-truncate", "li-item-title")
     if (tab.match && tab.match.title) {
