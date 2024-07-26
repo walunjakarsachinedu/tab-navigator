@@ -68,10 +68,16 @@
   color: white;
   cursor: pointer;
   display: none;
+  aspect-ratio: 1;
 }
 
 .selected .remove-button, li:hover .remove-button {
   display: block;
+}
+
+.remove-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
 }
 
 .subtitle {
