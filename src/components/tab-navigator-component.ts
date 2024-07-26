@@ -39,7 +39,14 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayI {
     this.searchBar.classList.add('search-bar');
     this.searchBar.type = 'text';
     this.searchBar.placeholder = 'Search tabs';
-    this.searchBar.addEventListener('input', () => {
+
+    var prevInput = "";
+    this.searchBar.addEventListener('input', (event) => {
+      const target = (event.target as HTMLInputElement);
+      target.value = target.value.replace(/[ˍ˝˚]/g, "");
+      if(prevInput == target.value) return;
+      prevInput = target.value;
+      
       this.setFilteredTabs();
       this.show()
     });

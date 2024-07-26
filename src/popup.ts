@@ -56,6 +56,9 @@ keyboard.listenKeyDown(async (keys: Set<String>) => {
   if(keys.has("alt") && keys.has("k")) {
     overlay.selectPreviousItem();
   }
+  if(keys.has("alt") && keys.has("h")) {
+    window.close();
+  }
 });
 
 keyboard.listenKeyUp((key: String) => {
