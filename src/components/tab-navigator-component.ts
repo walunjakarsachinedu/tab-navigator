@@ -113,6 +113,8 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayI {
 
   hideSearchBar() {
     this.searchBar.style.display = 'none';
+    this.searchBar.value = '';
+    this.setFilteredTabs();
     this.show();
   }
 
