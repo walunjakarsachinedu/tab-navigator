@@ -92,7 +92,7 @@ class TabTracker {
       const tabData: TabData[] = JSON.parse(jsonData['tabQueue']);
       // Validate all restored tabs are actually present or not
       return new Promise((resolve) => {
-        chrome.tabs.query({}, (tabs) => {
+        chrome.tabs.query({}, async (tabs) => {
           const validTabs = tabData.filter(tab => tabs.some(t => t.id === tab.id));
           const remainingTabs = tabs
             .filter(tab => tabData
@@ -107,10 +107,24 @@ class TabTracker {
             }));
           validTabs.forEach(tab => this._tabQue.add(tab));
           remainingTabs.forEach(tab => this._tabQue.add(tab));
+
+          this._onTabActivated(await this.getActiveTabInfo());
           resolve();
         });
       }); 
     }
+  }
+
+  private async getActiveTabInfo(): Promise<chrome.tabs.TabActiveInfo> {
+    return new Promise<chrome.tabs.TabActiveInfo>((resolve) => {
+      chrome.tabs.query({active: true, currentWindow: true}, function(tabs: chrome.tabs.Tab[]) {
+        var activeTab = (tabs[0]);
+        resolve({
+          tabId: activeTab.id!,
+          windowId: activeTab.windowId
+        });
+      });
+    });
   }
 
   static getTabByIdFunc(tabId: number): DataGetter<TabData> {
