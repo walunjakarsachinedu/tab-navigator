@@ -67,6 +67,11 @@
   border: none;
   color: white;
   cursor: pointer;
+  display: none;
+}
+
+.selected .remove-button, li:hover .remove-button {
+  display: block;
 }
 
 .subtitle {
