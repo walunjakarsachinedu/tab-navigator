@@ -7,7 +7,7 @@ module.exports = {
     popup: path.resolve(__dirname, "src/popup.ts"),
   },
   output: {
-    path: path.resolve(__dirname, "extension"),
+    path: path.resolve(__dirname, "extension/scripts"),
     filename: "[name].js"
   },
   devtool: "cheap-module-source-map",

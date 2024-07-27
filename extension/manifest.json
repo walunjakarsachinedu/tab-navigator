@@ -5,7 +5,7 @@
   "description": "Navigate tabs like in Visual Studio Code",
   "permissions": ["tabs", "commands", "storage"],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "scripts/background.js"
   },
   "action": {
     "default_popup": "popup/popup.html"

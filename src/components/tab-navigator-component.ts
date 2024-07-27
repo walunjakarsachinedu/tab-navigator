@@ -161,7 +161,7 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayI {
     favIcon.style.marginRight = '16px';
     favIcon.onerror = function() {
       this.onerror = null; // Prevents infinite loop if the fallback image also fails
-      favIcon.src = chrome.runtime.getURL('popup/image-not-found.png');
+      favIcon.src = chrome.runtime.getURL('assets/image-not-found.png');
     }
 
     
