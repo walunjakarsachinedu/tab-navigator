@@ -232,6 +232,8 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayI {
     });
     this._selectedTabIndex = tabIndex;
     this._onItemHighlighted.emit(this.filteredTabs[tabIndex]);
+
+    this.scrollToSelectedItem();
   }
 
   selectNextItem(): void {
@@ -244,6 +246,26 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayI {
     this.selectItem(this._selectedTabIndex);
   }
 
+
+  scrollToSelectedItem(): void {
+    const ul = this._shadowRoot.querySelector('ul')!;
+    const selectedItem = ul.querySelector('.selected');
+
+    if(!selectedItem) return; 
+
+    const isSearchBarVisible = this.searchBar.style.display == 'block';
+    const top = isSearchBarVisible ? this.searchBarParent.getBoundingClientRect().bottom : 0; 
+    const bottom = window.innerHeight; 
+    const selectedItemRect = selectedItem.getBoundingClientRect();
+      
+    if (selectedItemRect.top < top) {
+      // Scroll in down direction (as item is hidden above the viewport)
+      document.documentElement.scrollTop -= top - selectedItemRect.top;
+    } else if (bottom < selectedItemRect.bottom ) {
+      // Scroll in up direction (as item is hidden below the viewport)
+      document.documentElement.scrollTop += selectedItemRect.bottom - bottom;
+    }
+  }
 
   onItemSelected(listener: EventHandler<TabData>): void {
     this._itemSelectedEmitter.addListener(listener);
