@@ -11,6 +11,7 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayI {
   private _container: HTMLElement;
   private _shadowRoot: ShadowRoot;
   private searchBar!: HTMLInputElement;
+  private searchBarParent!: HTMLElement; // To control sticky positioning of the search bar
 
   private _itemSelectedEmitter: EventEmitter<TabData> = new EventEmitter();
   private _itemDeletedEmitter: EventEmitter<TabData> = new EventEmitter();
@@ -50,7 +51,12 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayI {
       this.setFilteredTabs();
       this.show()
     });
-    dialog.appendChild(this.searchBar);
+
+    this.searchBarParent = document.createElement('div');
+    this.searchBarParent.classList.add('search-bar-background');
+    this.searchBarParent.appendChild(this.searchBar);
+
+    dialog.appendChild(this.searchBarParent);
 
     const list = document.createElement('ul');
     dialog.appendChild(list);
@@ -105,6 +111,8 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayI {
   }
   
   showSearchBar() {
+    this.searchBarParent.style.paddingTop = "10px";
+    this.searchBarParent.style.position = "sticky";
     this.searchBar.style.display = 'block';
     this.searchBar.value = '';
     this.searchBar.focus();
@@ -112,6 +120,8 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayI {
   }
 
   hideSearchBar() {
+    this.searchBarParent.style.paddingTop = "0px";
+    this.searchBarParent.style.position = "static";
     this.searchBar.style.display = 'none';
     this.searchBar.value = '';
     this.setFilteredTabs();
