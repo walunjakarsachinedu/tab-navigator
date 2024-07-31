@@ -14,13 +14,13 @@ The Tab Navigator extension is designed to streamline your browsing experience w
   - Use `Alt+P` to toggle the search bar within the popup for quick tab searching.<br/><br/>
 
 ### Navigator Overlay &nbsp; 🗂️
-- **Cycle Through Tabs:** &nbsp; 🔄
+- **Cycle Through Tabs:** &nbsp;
   - Press `Alt+J` or the ⬇️ Down Arrow key to cycle down through recently visited tabs.
   - Press `Alt+K` or the ⬆️ Up Arrow key to move up the list in the navigator overlay. <br/><br/>
 - **Quick Tab Access:** &nbsp; 🎯
   - Release the `Alt` key or press `Enter` to switch to the currently selected tab.
   - Click on any tab item to switch to that tab. <br/><br/>
-- **Remove Tabs Easily:** &nbsp; ❌
+- **Remove Tabs Easily:** &nbsp;
   - Click the remove button in the overlay to close the tab. <br/><br/>
 
 
