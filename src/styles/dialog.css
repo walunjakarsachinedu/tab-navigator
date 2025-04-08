@@ -20,7 +20,6 @@
   outline: none;
 }
 
-
 .highlight {
   background-color: rgb(250, 223, 162);
   color: black;
@@ -37,7 +36,7 @@
   padding: 10px;
   padding-top: 0px;
 
-  scrollbar-width: thin; 
+  scrollbar-width: thin;
   scrollbar-color: #888888 #f0f0f0;
 }
 
@@ -76,7 +75,8 @@
   aspect-ratio: 1;
 }
 
-.selected .remove-button, li:hover .remove-button {
+.selected .remove-button,
+li:hover .remove-button {
   display: block;
 }
 

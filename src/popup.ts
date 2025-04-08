@@ -6,7 +6,7 @@ let overlay = new TabNavigatorOverlay();
 let keyboard = new MyKeyboard(["alt"]);
 let highlightedTab: TabData | undefined;
 
-overlay.element.id = 'tab-navigator-overlay';
+overlay.element.id = "tab-navigator-overlay";
 
 let isSearchBarVisible: boolean = false;
 
@@ -22,7 +22,7 @@ async function showOverlay() {
 }
 
 var tabs: TabData[] = [];
-async function createOverlay() : Promise<HTMLElement> {
+async function createOverlay(): Promise<HTMLElement> {
   tabs = await getTabs();
   overlay.show(tabs);
   addEventHandler();
@@ -36,65 +36,63 @@ function addEventHandler() {
   });
 
   overlay.onItemDeleted(async (tab) => {
-    tabs = tabs.filter(t => t != tab);
+    tabs = tabs.filter((t) => t != tab);
     await deleteTab(tab);
   });
 
-  overlay.onItemHighlighted((tab) => highlightedTab = tab);
+  overlay.onItemHighlighted((tab) => (highlightedTab = tab));
 }
 
-
 keyboard.listenKeyDown(async (keys: Set<String>) => {
-  if(keys.has("alt") && keys.has("p")) {
+  if (keys.has("alt") && keys.has("p")) {
     isSearchBarVisible = !isSearchBarVisible;
-    if(isSearchBarVisible) overlay.showSearchBar();
+    if (isSearchBarVisible) overlay.showSearchBar();
     else overlay.hideSearchBar();
   }
-  if(keys.has("alt") && keys.has("j")) {
+  if (keys.has("alt") && keys.has("j")) {
     overlay.selectNextItem();
   }
-  if(keys.has("alt") && keys.has("k")) {
+  if (keys.has("alt") && keys.has("k")) {
     overlay.selectPreviousItem();
   }
-  if(keys.has("alt") && keys.has("h")) {
+  if (keys.has("alt") && keys.has("h")) {
     window.close();
   }
 });
 
 keyboard.listenKeyUp((key: String) => {
-  if(key == "alt" && !isSearchBarVisible) selectTabThenHideOverlay();
+  if (key == "alt" && !isSearchBarVisible) selectTabThenHideOverlay();
 });
 
-function  getTabs(): Promise<TabData[]> {
+function getTabs(): Promise<TabData[]> {
   return new Promise<TabData[]>((resolve, reject) => {
-    chrome.runtime.sendMessage({ action: "getTabs" }, function(response) {
+    chrome.runtime.sendMessage({ action: "getTabs" }, function (response) {
       if (response) resolve(response.tabs);
       else reject(new Error("Failed to get tabs"));
     });
   });
 }
 
-
-let activeTabId: number|undefined;
+let activeTabId: number | undefined;
 chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
   activeTabId = tabs[0].id;
 });
 
 async function selectTabThenHideOverlay(tab?: TabData) {
-  const isCurrentTab = (tab??highlightedTab)?.id == activeTabId;
-  if(!isCurrentTab) await selectTab(tab);
+  const isCurrentTab = (tab ?? highlightedTab)?.id == activeTabId;
+  if (!isCurrentTab) await selectTab(tab);
   window.close();
 }
 
 async function selectTab(tab?: TabData): Promise<void> {
   return new Promise((resolve, reject) => {
     tab ??= highlightedTab;
-    if(tab) chrome.runtime.sendMessage({ action: "selectTab" , id: tab.id });
+    if (tab) chrome.runtime.sendMessage({ action: "selectTab", id: tab.id });
   });
 }
 
 async function deleteTab(tab: TabData): Promise<void> {
   return new Promise<void>((resolve, reject) => {
-    chrome.runtime.sendMessage({ action: "deleteTab", id: tab.id});
+    chrome.runtime.sendMessage({ action: "deleteTab", id: tab.id });
   });
 }

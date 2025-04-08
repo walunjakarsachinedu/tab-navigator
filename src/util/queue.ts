@@ -18,7 +18,7 @@ class Queue<Data> {
    * Method to move a specific data element to the front of the queue.
    * @param options Object containing either `data` or `getData` function.
    */
-  moveFront({ data, getData }: { data?: Data, getData?: DataGetter<Data> }) {
+  moveFront({ data, getData }: { data?: Data; getData?: DataGetter<Data> }) {
     const elementToMove = data ?? (getData ? getData(this._que) : undefined);
     if (elementToMove) {
       const index = this._que.indexOf(elementToMove);
@@ -38,7 +38,7 @@ class Queue<Data> {
    * Method to remove a specific data element from the queue.
    * @param options Object containing either `data` or `getData` function.
    */
-  remove({ data, getData }: { data?: Data, getData?: DataGetter<Data> }) {
+  remove({ data, getData }: { data?: Data; getData?: DataGetter<Data> }) {
     const elementToRemove = data ?? (getData ? getData(this._que) : undefined);
     if (elementToRemove) {
       const index = this._que.indexOf(elementToRemove);
@@ -53,7 +53,10 @@ class Queue<Data> {
    * @param options Object containing either `data` or `getData` function.
    * @param updateData Partial<Data> containing optional fields to update.
    */
-  update({ data, getData }: { data?: Data, getData?: DataGetter<Data> }, updateData?: Partial<Data>) {
+  update(
+    { data, getData }: { data?: Data; getData?: DataGetter<Data> },
+    updateData?: Partial<Data>,
+  ) {
     const elementToUpdate = data ?? (getData ? getData(this._que) : undefined);
     if (elementToUpdate && updateData) {
       const index = this._que.indexOf(elementToUpdate);

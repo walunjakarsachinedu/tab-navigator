@@ -8,7 +8,7 @@ class MyKeyboard {
   private _keysPressed: Set<String>;
   private _keyDownEvent: EventEmitter<Set<String>>;
   private _keyUpEvent: EventEmitter<String>;
-  
+
   constructor(initiallyPressedKeys?: String[]) {
     this._keysPressed = new Set(initiallyPressedKeys ?? []);
     this._keyDownEvent = new EventEmitter<Set<String>>();
@@ -17,12 +17,11 @@ class MyKeyboard {
     document.addEventListener("keydown", this._onKeyDown.bind(this));
     document.addEventListener("keyup", this._onKeyUp.bind(this));
 
-    document.addEventListener('visibilitychange', () => {
-        if (document.hidden) this._clearKeys();
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) this._clearKeys();
     });
-    window.addEventListener('blur', this._clearKeys);
+    window.addEventListener("blur", this._clearKeys);
   }
-
 
   removeKeyDownListener(listener: EventHandler<Set<String>>) {
     this._keyDownEvent.removeListener(listener);
@@ -40,26 +39,25 @@ class MyKeyboard {
   }
 
   private _clearKeys() {
-    if(this._keysPressed) this._keysPressed.clear();
+    if (this._keysPressed) this._keysPressed.clear();
   }
 
   private _onKeyDown(e: KeyboardEvent): void {
-    if(e.code == null) return;
+    if (e.code == null) return;
     const keyCode = getKeyName(e.code);
-    if(!this._keysPressed.has(keyCode)) {
-        this._keysPressed.add(keyCode);
+    if (!this._keysPressed.has(keyCode)) {
+      this._keysPressed.add(keyCode);
     }
     this._keyDownEvent.emit(this._keysPressed);
   }
   private _onKeyUp(e: KeyboardEvent): void {
-    if(e.code == null) return;
+    if (e.code == null) return;
     const keyCode = getKeyName(e.code);
-    if(this._keysPressed.has(keyCode)) {
-        this._keysPressed.delete(keyCode);
-        this._keyUpEvent.emit(keyCode);
+    if (this._keysPressed.has(keyCode)) {
+      this._keysPressed.delete(keyCode);
+      this._keyUpEvent.emit(keyCode);
     }
   }
 }
-
 
 export default MyKeyboard;

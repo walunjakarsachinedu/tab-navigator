@@ -1,7 +1,7 @@
-type EventHandler<Data> = (data: Data) => void; 
+type EventHandler<Data> = (data: Data) => void;
 
 class EventEmitter<Data> {
-  listeners: Set<EventHandler<Data>>; 
+  listeners: Set<EventHandler<Data>>;
 
   constructor() {
     this.listeners = new Set();
@@ -20,9 +20,8 @@ class EventEmitter<Data> {
   }
 
   emit(data: Data) {
-    for(let listener of this.listeners) listener(data);
+    for (let listener of this.listeners) listener(data);
   }
 }
 
-
-export {EventEmitter, EventHandler};
+export { EventEmitter, EventHandler };

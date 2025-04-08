@@ -1,54 +1,51 @@
 const path = require("path");
 
 module.exports = {
-  mode: "development",
+  mode: "production",
   entry: {
     background: path.resolve(__dirname, "src/background.ts"),
     popup: path.resolve(__dirname, "src/popup.ts"),
   },
   output: {
     path: path.resolve(__dirname, "extension/scripts"),
-    filename: "[name].js"
+    filename: "[name].js",
   },
   devtool: "cheap-module-source-map",
   module: {
     rules: [
       {
         test: /\.css$/,
-        use: 'raw-loader',
+        use: "raw-loader",
       },
       {
         test: /\.ts?$/,
         use: [
           // step 2: convert javascript to backward compatible
           {
-            loader: 'babel-loader',
+            loader: "babel-loader",
             options: {
-              "presets": [ 
+              presets: [
                 [
                   "@babel/preset-env",
                   {
-                    "targets": {
-                      "browsers": [
-                        "last 2 versions",
-                        "ie >= 11"
-                      ]
-                    }
-                  }
-                ]
-              ]
+                    targets: {
+                      browsers: ["last 2 versions", "ie >= 11"],
+                    },
+                  },
+                ],
+              ],
             },
           },
           // step 1: convert typescript to javascript
           {
             loader: "ts-loader",
-          }
+          },
         ],
         exclude: /node_modules/,
-      }
-    ]
+      },
+    ],
   },
   resolve: {
-    extensions: ['.ts', '.js'],
+    extensions: [".ts", ".js"],
   },
-}
+};
