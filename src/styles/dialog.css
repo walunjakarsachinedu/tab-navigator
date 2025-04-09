@@ -53,7 +53,7 @@
   cursor: pointer;
 }
 .dialog li.selected {
-  background: #007acc;
+  background: hsl(204, 100%, 30%);
 }
 .dialog li:hover:not(.selected) {
   background: #333333;
@@ -116,7 +116,7 @@ li:hover .remove-button {
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    rgba(30, 30, 30, 1) 0%,
-    rgba(50, 50, 50, 1) 100%
+    rgba(60, 60, 60, 1) 0%,
+    rgba(20, 20, 20, 1) 100%
   );
 }
