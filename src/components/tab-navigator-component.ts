@@ -177,16 +177,16 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayI {
   }
 
   private _createTabUiItem(tab: TabData & { match?: Match }) {
+    // image background
+    const imgBg = document.createElement("div");
+    imgBg.classList.add("favicon-background");
+
     const favIcon = document.createElement("img");
     favIcon.src = tab.favIconUrl;
-    favIcon.classList.add("favicon");
     favIcon.style.width = "16px";
     favIcon.style.height = "16px";
-    favIcon.style.marginRight = "10px";
-    favIcon.style.padding = "7px";
-    favIcon.style.borderRadius = "20px";
-    favIcon.style.background =
-      "radial-gradient(circle, rgba(30,30,30,1) 0%, rgba(50,50,50,1) 100%)";
+
+    imgBg.appendChild(favIcon);
 
     favIcon.onerror = function () {
       this.onerror = null; // Prevents infinite loop if the fallback image also fails
@@ -215,7 +215,7 @@ export class TabNavigatorOverlay implements TabNavigatorOverlayI {
     removeButton.classList.add("remove-button");
 
     const item = document.createElement("li");
-    item.appendChild(favIcon);
+    item.appendChild(imgBg);
     item.appendChild(title);
     item.appendChild(removeButton);
 
